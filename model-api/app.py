@@ -1,6 +1,11 @@
 import joblib
 import pandas as pd
+import flask
 from flask import Flask, request, jsonify
+
+print(flask.__version__)
+print(pd.__version__)
+print(joblib.__version__)
 
 # Load saved artifacts
 model = joblib.load("employee_retention_model.pkl")

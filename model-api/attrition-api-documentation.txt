@@ -1,0 +1,58 @@
+Education
+1 'Below College'
+2 'College'
+3 'Bachelor'
+4 'Master'
+5 'Doctor'
+
+EnvironmentSatisfaction
+1 'Low'
+2 'Medium'
+3 'High'
+4 'Very High'
+
+JobInvolvement
+1 'Low'
+2 'Medium'
+3 'High'
+4 'Very High'
+
+JobSatisfaction
+1 'Low'
+2 'Medium'
+3 'High'
+4 'Very High'
+
+PerformanceRating
+1 'Low'
+2 'Good'
+3 'Excellent'
+4 'Outstanding'
+
+RelationshipSatisfaction
+1 'Low'
+2 'Medium'
+3 'High'
+4 'Very High'
+
+WorkLifeBalance
+1 'Bad'
+2 'Good'
+3 'Better'
+4 'Best'
+
+Age: Min = 18, Max = 60
+DistanceFromHome: Min = 1, Max = 29 (kms)
+MonthlyIncome: Min = 1009, Max = 19999 (dollars)
+NumCompaniesWorked: Min = 0, Max = 9
+PercentSalaryHike: Min = 11, Max = 25
+StandardHours: Min = 80, Max = 80
+StockOptionLevel: Min = 0, Max = 3
+TotalWorkingYears: Min = 0, Max = 40
+TrainingTimesLastYear: Min = 0, Max = 6
+WorkLifeBalance: Min = 1, Max = 4
+YearsAtCompany: Min = 0, Max = 40
+YearsInCurrentRole: Min = 0, Max = 18
+YearsSinceLastPromotion: Min = 0, Max = 15
+YearsWithCurrManager: Min = 0, Max = 17
+
