@@ -1,22 +1,44 @@
 import joblib
 import pandas as pd
 import flask
+import shap
+import numpy as np
 from flask import Flask, request, jsonify
 
-print(flask.__version__)
-print(pd.__version__)
-print(joblib.__version__)
-
 # Load saved artifacts
-model = joblib.load("employee_retention_model.pkl")
-scaler = joblib.load("scaler.pkl")
-ohe = joblib.load("ohe.pkl")
-columns = joblib.load("feature_names.pkl")
+model = joblib.load("model-api/employee_retention_model.pkl")
+scaler = joblib.load("model-api/scaler.pkl")
+ohe = joblib.load("model-api/ohe.pkl")
+columns = joblib.load("model-api/feature_names.pkl")
+feature_map=joblib.load("model-api/feature_map.pkl")
 
-cat_cols = ['OverTime', 'Gender', 'BusinessTravel', 'Department',
-                    'MaritalStatus', 'EducationField', 'JobRole']
+cat_cols = ['OverTime', 'Gender', 'Department', 'MaritalStatus', 'JobRole']
 
 app = Flask(__name__)
+
+def explain_employee_summary(emp_id, X_unscaled, shap_values, feature_map, top_n=3):
+    shap_row = shap_values[emp_id].values
+    feature_names = X_unscaled.columns
+    row = X_unscaled.iloc[emp_id]
+
+    abs_values = np.abs(shap_row)
+    sorted_indices = abs_values.argsort()[::-1]
+
+    reasons = []
+    count = 0
+    for idx in sorted_indices:
+        feature = feature_names[idx]
+        if feature.startswith("Department_") or feature in feature_map:
+            continue  # skip excluded features
+        actual_value = row[feature]
+        median = X_unscaled[feature].median()
+        direction = "high_" if actual_value < median else "low"
+        reasons.append(f"{direction} {feature}")
+        count += 1
+        if count >= top_n:
+            break
+
+    return reasons
 
 @app.route("/")
 def home():
@@ -52,9 +74,21 @@ def predict():
         else:
             attrition_class="high_risk"
 
+        explainer = shap.Explainer(model)
+        shap_values = explainer(df_final)
+
+        explanation = explain_employee_summary(
+            emp_id=0,
+            X_unscaled=df,
+            shap_values=shap_values,
+            feature_map=feature_map,
+            top_n=3
+        )
+
         return jsonify({
             "attrition_probability": round(float(prob), 2),
             "attrition_class": attrition_class,
+            "Reasons": explanation
         })
 
     except Exception as e:
