@@ -1,12 +1,11 @@
 import joblib
 import pandas as pd
-import flask
 import shap
 import numpy as np
 from flask import Flask, request, jsonify
 
 # Load saved artifacts
-model = joblib.load("model-api/employee_retention_model.pkl")
+model = joblib.load("model-api/employee_retention_model_classification.pkl")
 scaler = joblib.load("model-api/scaler.pkl")
 ohe = joblib.load("model-api/ohe.pkl")
 columns = joblib.load("model-api/feature_names.pkl")
@@ -32,8 +31,7 @@ def explain_employee_summary(emp_id, X_unscaled, shap_values, feature_map, top_n
             continue  # skip excluded features
         actual_value = row[feature]
         median = X_unscaled[feature].median()
-        direction = "high_" if actual_value < median else "low"
-        reasons.append(f"{direction} {feature}")
+        reasons.append(f"{feature}")
         count += 1
         if count >= top_n:
             break
@@ -65,11 +63,11 @@ def predict():
         df_final = scaler.transform(df)
         
 
-        prob = model.predict(df_final)
+        prob = model.predict_proba(df_final)[0][1]
 
-        if prob <= 0.4:
+        if prob <= 0.2:
             attrition_class="low_risk"
-        elif prob <= 0.7:
+        elif prob <= 0.5:
             attrition_class="medium_risk"
         else:
             attrition_class="high_risk"
