@@ -5,11 +5,11 @@ import numpy as np
 from flask import Flask, request, jsonify
 
 # Load saved artifacts
-model = joblib.load("model-api/employee_retention_model_classification.pkl")
-scaler = joblib.load("model-api/scaler.pkl")
-ohe = joblib.load("model-api/ohe.pkl")
-columns = joblib.load("model-api/feature_names.pkl")
-feature_map=joblib.load("model-api/feature_map.pkl")
+model = joblib.load("model-api/models/employee_retention_model_classification.pkl")
+scaler = joblib.load("model-api/models/scaler.pkl")
+ohe = joblib.load("model-api/models/ohe.pkl")
+columns = joblib.load("model-api/models/feature_names.pkl")
+feature_map=joblib.load("model-api/models/feature_map.pkl")
 
 cat_cols = ['OverTime', 'Gender', 'Department', 'MaritalStatus', 'JobRole']
 
