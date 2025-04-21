@@ -122,6 +122,11 @@ const EmployeeSchema = new mongoose.Schema(
             min: 0,
             max: 15,
         },
+        attrition: {
+            type: String,
+            enum: ["Yes", "No"],
+            required: true,
+        },
 
         // ML Output (To be updated after prediction)
         attritionProbability: {
