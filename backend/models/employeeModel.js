@@ -134,8 +134,12 @@ const EmployeeSchema = new mongoose.Schema(
             default: null,
         },
         attritionRiskLevel: {
-            type: String, // Optional: "Low", "Medium", "High"
-            enum: ["Low", "Medium", "High"],
+            type: String,
+            enum: ["low_risk", "medium_risk", "high_risk"],
+            default: null,
+        },
+        shapExplanations: {
+            type: String,
             default: null,
         },
     },
