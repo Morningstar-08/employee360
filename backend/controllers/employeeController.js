@@ -4,11 +4,16 @@ const axios = require("axios");
 // Create a new employee
 const addEmployee = async (req, res) => {
     try {
+        const { email } = req.body;
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: "User already exists" });
+        }
         const employee = new Employee(req.body);
         await employee.save();
         res.status(201).json(employee);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -30,13 +35,34 @@ const editEmployee = async (req, res) => {
 };
 
 // Delete an employee
+// const removeEmployee = async (req, res) => {
+//     try {
+//         const removed = await Employee.findByIdAndDelete(req.params.id);
+//         if (!removed) {
+//             return res.status(404).json({ message: "Employee not found" });
+//         }
+//         res.json({ message: "Employee removed successfully" });
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// };
+
 const removeEmployee = async (req, res) => {
     try {
-        const removed = await Employee.findByIdAndDelete(req.params.id);
-        if (!removed) {
+        const updated = await Employee.findByIdAndUpdate(
+            req.params.id,
+            { attrition: "Yes" },
+            { new: true }
+        );
+
+        if (!updated) {
             return res.status(404).json({ message: "Employee not found" });
         }
-        res.json({ message: "Employee removed successfully" });
+
+        res.json({
+            message: "Employee attrition status updated to 'Yes'",
+            employee: updated,
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -46,6 +72,15 @@ const removeEmployee = async (req, res) => {
 const getAllEmployees = async (req, res) => {
     try {
         const employees = await Employee.find();
+        res.json(employees);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getAllCurrentEmployee = async (req, res) => {
+    try {
+        const employees = await Employee.find({ attrition: "No" });
         res.json(employees);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -109,4 +144,5 @@ module.exports = {
     getAllEmployees,
     getEmployeeById,
     predictAttrition,
+    getAllCurrentEmployee,
 };

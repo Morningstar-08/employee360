@@ -6,9 +6,11 @@ router.post("/addEmployee", employeeController.addEmployee);
 
 router.put("/editEmployee/:id", employeeController.editEmployee);
 
-router.delete("/:id", employeeController.removeEmployee);
+router.patch("/:id", employeeController.removeEmployee);
 
 router.get("/getAllEmployees", employeeController.getAllEmployees);
+
+router.get("/getAllCurrentEmployees", employeeController.getAllCurrentEmployee);
 
 router.get("/getEmployeeById/:id", employeeController.getEmployeeById);
 
