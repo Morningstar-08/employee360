@@ -1,29 +1,21 @@
 pipeline {
     agent any
-    
-    environment {
-        IMAGE_NAME = 'employee360'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Build & Deploy') {
-            steps {
                 script {
-                    // Build and run Docker containers in detached mode
-                    docker-compose up -d
+                    // Checkout the 'main' branch from your repository
+                    git branch: 'main', url: 'https://github.com/Morningstar-08/employee360.git'
                 }
             }
         }
-    
-    post {
-        always {
-            cleanWs()  // Clean up workspace (optional)
+        stage('Compose') {
+            steps {
+                // Change directory and run docker-compose in the same shell invocation
+                bat '''
+                    docker-compose up -d
+                '''
+            }
         }
     }
 }
