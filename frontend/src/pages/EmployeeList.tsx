@@ -1,7 +1,7 @@
 import Sidebar from "@/components/sidebar";
 import SideHeader from "@/components/side-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import EmployeeTable from "@/components/Empoyee-table(api)";
+import { EmployeeTable } from "@/components/Employee-Table";
 
 export default function EmployeeList() {
   return (
