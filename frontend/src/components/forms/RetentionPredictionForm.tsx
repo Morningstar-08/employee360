@@ -1,12 +1,7 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,284 +19,218 @@ const dummyPredictionData = [
   { name: "Unlikely", value: 35 },
 ];
 
+const initialFormState = {
+  age: "",
+  jobLevel: "",
+  monthlyIncome: "",
+  percentSalaryHike: "",
+  yearsAtCompany: "",
+  yearsSinceLastPromotion: "",
+  department: "",
+  education: "",
+  environmentSatisfaction: "",
+  gender: "",
+  jobInvolvement: "",
+  jobRole: "",
+  jobSatisfaction: "",
+  maritalStatus: "",
+  overTime: "",
+  performanceRating: "",
+  workLifeBalance: "",
+};
+
 export default function RetentionPredictionForm() {
   const [showGraph, setShowGraph] = useState(false);
+  type FormField = keyof typeof initialFormState;
+  type FormData = Record<FormField, string>;
+
+  const [formData, setFormData] = useState<FormData>(initialFormState);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form Data:", formData);
     setShowGraph(true);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-10 px-4">
-      <h1 className="text-3xl font-bold text-blue-600 mb-6">
+    <div className="flex flex-col items-center justify-top min-h-screen  px-2 py-5 bg-gray-50">
+      <h1 className="text-3xl sm:text-4xl font-bold text-blue-700 mb-10 text-center">
         Employee Retention Prediction
       </h1>
 
       <div
-        className={`w-full max-w-7xl transition-all duration-500 ${
-          showGraph ? "flex flex-col md:flex-row gap-6" : ""
+        className={`w-full max-w-7xl grid grid-cols-1 gap-6 ${
+          showGraph ? "lg:grid-cols-2" : ""
         }`}
       >
         {/* Form Card */}
-        <Card
-          className={`w-full md:w-1/2 ${
-            showGraph ? "" : "mx-auto"
-          } shadow-lg border border-gray-300`}
-        >
+        <Card className="shadow-[0_0_10px_rgba(0,0,0,0.25)]  border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl font-semibold text-blue-600 text-center">
+              Enter Employee Details
+            </CardTitle>
+          </CardHeader>
           <CardContent>
             <form
               onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
             >
-              {/* Form fields - keeping them as-is for now */}
-              <div>
-                <Label htmlFor="age">Age</Label>
-                <Input type="number" min={18} max={65} name="age" required />
-              </div>
+              {/* Input Fields */}
+              {[
+                {
+                  label: "Age",
+                  name: "age",
+                  type: "number",
+                  props: { min: 18, max: 65 },
+                },
+                {
+                  label: "Job Level",
+                  name: "jobLevel",
+                  type: "number",
+                  props: { min: 1 },
+                },
+                {
+                  label: "Monthly Income",
+                  name: "monthlyIncome",
+                  type: "number",
+                  props: { min: 1000, max: 20000 },
+                },
+                {
+                  label: "Percent Salary Hike",
+                  name: "percentSalaryHike",
+                  type: "number",
+                  props: { min: 10, max: 25, step: 0.1 },
+                },
+                {
+                  label: "Years at Company",
+                  name: "yearsAtCompany",
+                  type: "number",
+                  props: { min: 0, max: 40 },
+                },
+                {
+                  label: "Years Since Last Promotion",
+                  name: "yearsSinceLastPromotion",
+                  type: "number",
+                  props: { min: 0, max: 15 },
+                },
+              ].map((field) => (
+                <div key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Input
+                    name={field.name}
+                    type={field.type}
+                    {...field.props}
+                    value={formData[field.name as FormField]}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              ))}
 
-              <div>
-                <Label htmlFor="department">Department</Label>
-                <Select name="department" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select department" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="Sales">Sales</SelectItem>
-                    <SelectItem value="Research & Development">
-                      Research & Development
-                    </SelectItem>
-                    <SelectItem value="Human Resources">
-                      Human Resources
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Select Fields */}
+              {[
+                {
+                  name: "department",
+                  label: "Department",
+                  options: [
+                    "Sales",
+                    "Research & Development",
+                    "Human Resources",
+                  ],
+                },
+                {
+                  name: "education",
+                  label: "Education",
+                  options: [
+                    "Below College",
+                    "College",
+                    "Bachelor",
+                    "Master",
+                    "Doctor",
+                  ],
+                },
+                {
+                  name: "environmentSatisfaction",
+                  label: "Environment Satisfaction",
+                  options: ["Low", "Medium", "High", "Very High"],
+                },
+                {
+                  name: "gender",
+                  label: "Gender",
+                  options: ["Male", "Female"],
+                },
+                {
+                  name: "jobInvolvement",
+                  label: "Job Involvement",
+                  options: ["Low", "Medium", "High", "Very High"],
+                },
+                {
+                  name: "jobRole",
+                  label: "Job Role",
+                  options: [
+                    "Sales Executive",
+                    "Research Scientist",
+                    "Laboratory Technician",
+                    "Manufacturing Director",
+                    "Healthcare Representative",
+                    "Manager",
+                    "Sales Representative",
+                    "Human Resources",
+                    "Research Director",
+                  ],
+                },
+                {
+                  name: "jobSatisfaction",
+                  label: "Job Satisfaction",
+                  options: ["Low", "Medium", "High", "Very High"],
+                },
+                {
+                  name: "maritalStatus",
+                  label: "Marital Status",
+                  options: ["Single", "Married", "Divorced"],
+                },
+                { name: "overTime", label: "Overtime", options: ["Yes", "No"] },
+                {
+                  name: "performanceRating",
+                  label: "Performance Rating",
+                  options: ["Low", "Good", "Excellent", "Outstanding"],
+                },
+                {
+                  name: "workLifeBalance",
+                  label: "Work-Life Balance",
+                  options: ["Bad", "Good", "Better", "Best"],
+                },
+              ].map((field) => (
+                <div key={field.name}>
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <select
+                    name={field.name}
+                    value={formData[field.name as FormField]}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="" disabled>
+                      {`Select ${field.label}`}
+                    </option>
+                    {field.options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
 
-              {/* Remaining fields (unchanged logic, but follow the same structure) */}
-              <div>
-                <Label htmlFor="education">Education</Label>
-                <Select name="education" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select education level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Below College</SelectItem>
-                    <SelectItem value="2">College</SelectItem>
-                    <SelectItem value="3">Bachelor</SelectItem>
-                    <SelectItem value="4">Master</SelectItem>
-                    <SelectItem value="5">Doctor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="environmentSatisfaction">
-                  Environment Satisfaction
-                </Label>
-                <Select name="environmentSatisfaction" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select satisfaction level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Low</SelectItem>
-                    <SelectItem value="2">Medium</SelectItem>
-                    <SelectItem value="3">High</SelectItem>
-                    <SelectItem value="4">Very High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="gender">Gender</Label>
-                <Select name="gender" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="Male">Male</SelectItem>
-                    <SelectItem value="Female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="jobInvolvement">Job Involvement</Label>
-                <Select name="jobInvolvement" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select involvement level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Low</SelectItem>
-                    <SelectItem value="2">Medium</SelectItem>
-                    <SelectItem value="3">High</SelectItem>
-                    <SelectItem value="4">Very High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="jobLevel">Job Level</Label>
-                <Input type="number" name="jobLevel" min={1} required />
-              </div>
-
-              <div>
-                <Label htmlFor="jobRole">Job Role</Label>
-                <Select name="jobRole" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="Sales Executive">
-                      Sales Executive
-                    </SelectItem>
-                    <SelectItem value="Research Scientist">
-                      Research Scientist
-                    </SelectItem>
-                    <SelectItem value="Laboratory Technician">
-                      Laboratory Technician
-                    </SelectItem>
-                    <SelectItem value="Manufacturing Director">
-                      Manufacturing Director
-                    </SelectItem>
-                    <SelectItem value="Healthcare Representative">
-                      Healthcare Representative
-                    </SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
-                    <SelectItem value="Sales Representative">
-                      Sales Representative
-                    </SelectItem>
-                    <SelectItem value="Human Resources">
-                      Human Resources
-                    </SelectItem>
-                    <SelectItem value="Research Director">
-                      Research Director
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="jobSatisfaction">Job Satisfaction</Label>
-                <Select name="jobSatisfaction" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select satisfaction level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Low</SelectItem>
-                    <SelectItem value="2">Medium</SelectItem>
-                    <SelectItem value="3">High</SelectItem>
-                    <SelectItem value="4">Very High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="maritalStatus">Marital Status</Label>
-                <Select name="maritalStatus" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="Single">Single</SelectItem>
-                    <SelectItem value="Married">Married</SelectItem>
-                    <SelectItem value="Divorced">Divorced</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="monthlyIncome">Monthly Income</Label>
-                <Input
-                  type="number"
-                  name="monthlyIncome"
-                  min={1000}
-                  max={20000}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="overTime">Overtime</Label>
-                <Select name="overTime" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="Yes">Yes</SelectItem>
-                    <SelectItem value="No">No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="percentSalaryHike">Percent Salary Hike</Label>
-                <Input
-                  type="number"
-                  name="percentSalaryHike"
-                  step="0.1"
-                  min={10}
-                  max={25}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="performanceRating">Performance Rating</Label>
-                <Select name="performanceRating" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select rating" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Low</SelectItem>
-                    <SelectItem value="2">Good</SelectItem>
-                    <SelectItem value="3">Excellent</SelectItem>
-                    <SelectItem value="4">Outstanding</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="workLifeBalance">Work-Life Balance</Label>
-                <Select name="workLifeBalance" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select balance level" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="1">Bad</SelectItem>
-                    <SelectItem value="2">Good</SelectItem>
-                    <SelectItem value="3">Better</SelectItem>
-                    <SelectItem value="4">Best</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="yearsAtCompany">Years at Company</Label>
-                <Input
-                  type="number"
-                  name="yearsAtCompany"
-                  min={0}
-                  max={40}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="yearsSinceLastPromotion">
-                  Years Since Last Promotion
-                </Label>
-                <Input
-                  type="number"
-                  name="yearsSinceLastPromotion"
-                  min={0}
-                  max={15}
-                  required
-                />
-              </div>
-
-              <div className="md:col-span-2 mt-4 flex justify-end">
-                <Button type="submit" variant="default">
+              <div className="sm:col-span-2 flex justify-end mt-4">
+                <Button type="submit" className="w-full sm:w-auto">
                   Predict Retention
                 </Button>
               </div>
@@ -309,11 +238,11 @@ export default function RetentionPredictionForm() {
           </CardContent>
         </Card>
 
-        {/* Prediction Result Chart */}
+        {/* Prediction Chart */}
         {showGraph && (
-          <Card className="w-full md:w-1/2 shadow-lg border border-gray-300">
+          <Card className="shadow-xl border border-gray-200">
             <CardHeader>
-              <CardTitle className="text-xl text-blue-600 text-center">
+              <CardTitle className="text-lg sm:text-xl font-semibold text-blue-600 text-center">
                 Prediction Result
               </CardTitle>
             </CardHeader>
@@ -330,6 +259,16 @@ export default function RetentionPredictionForm() {
           </Card>
         )}
       </div>
+      {/* {Object.values(formData).some((val) => val !== "") && (
+        <div className="mt-6 w-full max-w-4xl bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Form Data Preview:
+          </h2>
+          <pre className="text-sm text-gray-700 whitespace-pre-wrap">
+            {JSON.stringify(formData, null, 2)}
+          </pre>
+        </div>
+      )} */}
     </div>
   );
 }

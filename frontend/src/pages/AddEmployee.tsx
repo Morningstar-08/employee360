@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Sidebar from "@/components/sidebar";
-import SideHeader from "@/components/side-header";
+import SideHeader from "@/components/topbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AddEmployeeForm from "@/components/forms/EmployeeFormTabs";
 import { EmployeeProfileCard } from "@/components/forms/EmployeeProfile";

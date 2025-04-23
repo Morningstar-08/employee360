@@ -1,28 +1,5 @@
-// import { AppSidebar } from "@/components/app-sidebar";
-// import { ChartAreaInteractive } from "@/components/chart-area-interactive";
-// import { SectionCards } from "@/components/section-cards";
-// import { SiteHeader } from "@/components/site-header";
-// import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-// import { Component } from "@/components/pichart-doughnut";
-// export default function Dashboard() {
-//   return (
-//     <SidebarProvider>
-//       <AppSidebar variant="inset" />
-//       <SidebarInset>
-//         <SiteHeader />
-//         <div className="flex flex-col flex-1 px-4 py-6 md:px-6">
-//           <SectionCards />
-//           <br />
-//           <ChartAreaInteractive />
-//           <br />
-//           <Component />
-//         </div>
-//       </SidebarInset>
-//     </SidebarProvider>
-//   );
-// }
 import Sidebar from "@/components/sidebar";
-import SideHeader from "@/components/side-header";
+import SideHeader from "@/components/topbar";
 import DashboardUI from "@/components/dashboardui";
 
 const Dashboard = () => {

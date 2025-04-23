@@ -82,15 +82,10 @@ export default function EmployeeForm() {
       [field]: value,
     }));
   };
-  // const isFormComplete = () => {
-  //   return Object.entries(employee).every(([key, value]) => {
-  //     if (key === "id") return true; // ID is auto-generated or used for edit
-  //     return value !== "" && value !== null && value !== undefined;
-  //   });
-  // };
 
   const handleSave = () => {
     const requiredFields = [
+      "id",
       "name",
       "gender",
       "email",
@@ -131,10 +126,12 @@ export default function EmployeeForm() {
       );
       alert("Employee updated successfully!");
     } else {
-      setEmployees((prev) => [
-        ...prev,
-        { ...employee, id: crypto.randomUUID() },
-      ]);
+      // Prevent duplicate IDs
+      if (employees.some((emp) => emp.id === employee.id)) {
+        alert("Employee ID already exists. Please use a unique ID.");
+        return;
+      }
+      setEmployees((prev) => [...prev, employee]);
       alert("Employee added successfully!");
     }
 
@@ -197,6 +194,7 @@ export default function EmployeeForm() {
       case "general":
         return (
           <>
+            {InputField("id", "Employee ID")}
             {InputField("name", "Full Name")}
             <Select
               value={employee.gender}
@@ -335,6 +333,7 @@ export default function EmployeeForm() {
           </span>
         ))}
       </nav>
+
       {(mode === "edit" || mode === "remove") && tab === "general" && (
         <div className="flex flex-col gap-3 mb-4">
           <Input
@@ -343,7 +342,7 @@ export default function EmployeeForm() {
             onChange={(e) => setSearchName(e.target.value)}
           />
           <Input
-            placeholder="Search by ID"
+            placeholder="Search by Employee ID"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
           />
@@ -354,6 +353,7 @@ export default function EmployeeForm() {
           )}
         </div>
       )}
+
       <div className="space-y-4">{renderTabContent()}</div>
 
       <div className="mt-6 flex gap-4 mb-4">
@@ -365,6 +365,7 @@ export default function EmployeeForm() {
           Clear
         </Button>
       </div>
+
       <div className="flex gap-2 mb-4">
         <Button variant="outline" onClick={() => setMode("edit")}>
           Edit Existing
@@ -372,6 +373,16 @@ export default function EmployeeForm() {
         <Button variant="outline" onClick={() => setMode("remove")}>
           Remove Employee
         </Button>
+      </div>
+      <div className="mt-8">
+        <h2 className="font-semibold text-lg">All Employees:</h2>
+        <ul className="text-sm">
+          {employees.map((emp) => (
+            <li key={emp.id}>
+              <strong>{emp.name}</strong> ({emp.id})
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
