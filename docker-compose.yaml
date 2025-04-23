@@ -1,0 +1,49 @@
+version: "3.9"
+name: employee360
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - employee360
+
+  ml-service:
+    build:
+      context: ./model-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./backend/.env
+    networks:
+      - employee360
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongo
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - employee360
+    ports:
+      - 5173:5173
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:
+networks:
+  employee360:
+    driver: bridge
