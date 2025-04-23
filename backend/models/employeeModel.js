@@ -131,16 +131,16 @@ const EmployeeSchema = new mongoose.Schema(
         // ML Output (To be updated after prediction)
         attritionProbability: {
             type: Number, // Optional: ML model can return probability [0-1]
-            default: null,
+            default: "",
         },
         attritionRiskLevel: {
             type: String,
-            enum: ["low_risk", "medium_risk", "high_risk"],
-            default: null,
+            enum: ["low_risk", "medium_risk", "high_risk", ""],
+            default: "",
         },
         shapExplanations: {
             type: String,
-            default: null,
+            default: "",
         },
     },
     { timestamps: true }
