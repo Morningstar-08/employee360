@@ -5,6 +5,8 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
+const exportRoutes = require("./routes/exportRoutes");
+const attritionRoutes = require("./routes/attritionRoute");
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/excel", exportRoutes);
+app.use("/api/predict", attritionRoutes);
 
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {

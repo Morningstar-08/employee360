@@ -4,3 +4,5 @@ const { exportEmployeeData } = require("../controllers/exportController");
 const router = express.Router();
 
 router.get("/export", protect, exportEmployeeData);
+
+module.exports = router;
