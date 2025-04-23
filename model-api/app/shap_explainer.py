@@ -2,8 +2,6 @@ import joblib
 import numpy as np
 import pandas as pd
 
-columns = joblib.load("model-api/models/feature_names.pkl")
-
 def explain_employee_summary(emp_id, feature_names, shap_values, feature_map, top_n=3):
 
     shap_row = shap_values[emp_id].values

@@ -1,10 +1,9 @@
-version: "3.9"
 name: employee360
 services:
   mongo:
     image: mongo
     ports:
-      - 27017:27017
+      - 8081:27017
     volumes:
       - mongo-data:/data/db
     networks:
@@ -17,6 +16,8 @@ services:
     restart: unless-stopped
     ports:
       - 5000:5000
+    volumes:
+      - pip_cache:/root/.cache/pip
 
   api:
     build:
@@ -44,6 +45,7 @@ services:
 
 volumes:
   mongo-data:
+  pip_cache:
 networks:
   employee360:
     driver: bridge

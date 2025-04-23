@@ -5,11 +5,11 @@ from shap_explainer import explain_employee_summary
 from preprocessing import preprocess
 
 # Load saved artifacts
-model = joblib.load("model-api/models/employee_retention_model_classification.pkl")
-feature_map=joblib.load("model-api/models/feature_map.pkl")
-ohe = joblib.load("model-api/models/ohe.pkl")
-columns = joblib.load("model-api/models/feature_names.pkl")
-scaler = joblib.load("model-api/models/scaler.pkl")
+model = joblib.load("./models/employee_retention_model_classification.pkl")
+feature_map=joblib.load("./models/feature_map.pkl")
+ohe = joblib.load("./models/ohe.pkl")
+columns = joblib.load("./models/feature_names.pkl")
+scaler = joblib.load("./models/scaler.pkl")
 
 app = Flask(__name__)
 
