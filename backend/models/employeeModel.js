@@ -23,13 +23,43 @@ const EmployeeSchema = new mongoose.Schema(
         },
 
         // ML-Relevant Fields
-        age: {
+        Age: {
             type: Number,
             required: true,
             min: 18,
             max: 65,
         },
-        department: {
+        Department: {
+            type: String,
+            enum: ["Sales", "Research & Development", "Human Resources"],
+            required: true,
+        },
+        Education: {
+            type: Number,
+            enum: [1, 2, 3, 4, 5], // 1 = Below College ... 5 = Doctor
+            required: true,
+        },
+        EnvironmentSatisfaction: {
+            type: Number,
+            enum: [1, 2, 3, 4],
+            required: true,
+        },
+        Gender: {
+            type: String,
+            enum: ["Male", "Female"],
+            required: true,
+        },
+        JobInvolvement: {
+            type: Number,
+            enum: [1, 2, 3, 4],
+            required: true,
+        },
+        JobLevel: {
+            type: Number,
+            enum: [1, 2, 3, 4],
+            required: true,
+        },
+        JobRole: {
             type: String,
             enum: [
                 "Sales Executive",
@@ -44,79 +74,50 @@ const EmployeeSchema = new mongoose.Schema(
             ],
             required: true,
         },
-        education: {
-            type: Number,
-            enum: [1, 2, 3, 4, 5], // 1 = Below College ... 5 = Doctor
-            required: true,
-        },
-        environmentSatisfaction: {
+        JobSatisfaction: {
             type: Number,
             enum: [1, 2, 3, 4],
             required: true,
         },
-        gender: {
-            type: String,
-            enum: ["Male", "Female"],
-            required: true,
-        },
-        jobInvolvement: {
-            type: Number,
-            enum: [1, 2, 3, 4],
-            required: true,
-        },
-        jobLevel: {
-            type: Number,
-            enum: [1, 2, 3, 4],
-            required: true,
-        },
-        jobRole: {
-            type: String,
-            required: true,
-        },
-        jobSatisfaction: {
-            type: Number,
-            enum: [1, 2, 3, 4],
-            required: true,
-        },
-        maritalStatus: {
+        MaritalStatus: {
             type: String,
             enum: ["Single", "Married", "Divorced"],
             required: true,
         },
-        monthlyIncome: {
+        MonthlyIncome: {
             type: Number,
             required: true,
             min: 1000,
             max: 20000,
         },
-        overTime: {
+        OverTime: {
             type: String,
             enum: ["Yes", "No"],
             required: true,
         },
-        percentSalaryHike: {
+        PercentSalaryHike: {
             type: Number,
             required: true,
             min: 10,
             max: 25,
         },
-        performanceRating: {
+        PerformanceRating: {
             type: Number,
             enum: [1, 2, 3, 4],
             required: true,
         },
-        workLifeBalance: {
+        WorkLifeBalance: {
             type: Number,
             enum: [1, 2, 3, 4],
             required: true,
         },
-        yearsAtCompany: {
+        YearsAtCompany: {
             type: Number,
             required: true,
             min: 0,
             max: 40,
         },
-        yearsSinceLastPromotion: {
+        YearsSinceLastPromotion: {
             type: Number,
             required: true,
             min: 0,
