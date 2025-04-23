@@ -1,11 +1,34 @@
-import { Bell } from "lucide-react";
+import { Bell, Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const SideHeader = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Dispatch event so Sidebar can listen
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => !prev);
+    window.dispatchEvent(
+      new CustomEvent("toggle-sidebar", { detail: !sidebarOpen })
+    );
+  };
+
   return (
     <header className="w-full flex justify-between items-center py-4 px-6 bg-white shadow-[0_0_10px_rgba(0,0,0,0.3)]">
-      <div className="relative w-1/2">
-        <p className="text-lg font-semibold">Welcome Back, Gavano 🌟</p>
+      {/* Hamburger Toggle */}
+      <div className="md:hidden fixed top-3 left-4 z-50">
+        <button onClick={toggleSidebar} className="p-3 rounded-md ">
+          {sidebarOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </button>
       </div>
+
+      <div className="relative w-1/2">
+        <p className="ml-10 text-lg font-semibold">Welcome Back, Gavano 🌟</p>
+      </div>
+
       <div className="flex items-center space-x-4">
         <Bell className="w-5 h-5 text-gray-500" />
         <div className="flex items-center space-x-2">

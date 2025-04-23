@@ -1,5 +1,5 @@
 import Sidebar from "@/components/sidebar";
-import SideHeader from "@/components/side-header";
+import SideHeader from "@/components/topbar";
 import DashboardUI from "@/components/dashboardui";
 
 const Dashboard = () => {
