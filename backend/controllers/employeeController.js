@@ -5,8 +5,8 @@ const axios = require("axios");
 const addEmployee = async (req, res) => {
     try {
         const { email } = req.body;
-        const userExists = await User.findOne({ email });
-        if (userExists) {
+        const employeeExists = await Employee.findOne({ email });
+        if (employeeExists) {
             return res.status(400).json({ message: "User already exists" });
         }
         const employee = new Employee(req.body);
@@ -78,9 +78,18 @@ const getAllEmployees = async (req, res) => {
     }
 };
 
-const getAllCurrentEmployee = async (req, res) => {
+const getAllCurrentEmployees = async (req, res) => {
     try {
         const employees = await Employee.find({ attrition: "No" });
+        res.json(employees);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getAttritionEmployees = async (req, res) => {
+    try {
+        const employees = await Employee.find({ attrition: "Yes" });
         res.json(employees);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -90,6 +99,7 @@ const getAllCurrentEmployee = async (req, res) => {
 // Get a specific employee
 const getEmployeeById = async (req, res) => {
     try {
+        console.log("Fetching employee with ID:", req.params.id);
         const employee = await Employee.findById(req.params.id);
         if (!employee) {
             return res.status(404).json({ message: "Employee not found" });
@@ -144,5 +154,6 @@ module.exports = {
     getAllEmployees,
     getEmployeeById,
     predictAttrition,
-    getAllCurrentEmployee,
+    getAllCurrentEmployees,
+    getAttritionEmployees,
 };

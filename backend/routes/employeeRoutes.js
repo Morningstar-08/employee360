@@ -6,11 +6,16 @@ router.post("/addEmployee", employeeController.addEmployee);
 
 router.put("/editEmployee/:id", employeeController.editEmployee);
 
-router.patch("/:id", employeeController.removeEmployee);
+router.patch("/removeEmployee/:id", employeeController.removeEmployee);
 
 router.get("/getAllEmployees", employeeController.getAllEmployees);
 
-router.get("/getAllCurrentEmployees", employeeController.getAllCurrentEmployee);
+router.get(
+    "/getAllCurrentEmployees",
+    employeeController.getAllCurrentEmployees
+);
+
+router.get("/getAttritionEmployees", employeeController.getAttritionEmployees);
 
 router.get("/getEmployeeById/:id", employeeController.getEmployeeById);
 
