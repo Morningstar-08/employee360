@@ -7,7 +7,7 @@ columns = joblib.load("model-api/models/feature_names.pkl")
 def explain_employee_summary(emp_id, feature_names, shap_values, feature_map, top_n=3):
 
     shap_row = shap_values[emp_id].values
-    print(f"Feature names: {feature_names}")
+    # print(f"Feature names: {feature_names}")
     abs_values = np.abs(shap_row)
     sorted_indices = abs_values.argsort()[::-1]
 

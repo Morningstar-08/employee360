@@ -123,6 +123,7 @@ const predictAttrition = async (req, res) => {
             "http://127.0.0.1:5000/predict",
             employee
         );
+        console.log("Response from Flask API:", response.data);
 
         // Extract the response fields
         const { attrition_probability, attrition_class, reasons } =

@@ -140,7 +140,7 @@ const EmployeeSchema = new mongoose.Schema(
             default: "",
         },
         shapExplanations: {
-            type: String,
+            type: Array,
             default: "",
         },
     },
