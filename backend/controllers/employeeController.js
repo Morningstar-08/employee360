@@ -117,7 +117,7 @@ const predictAttrition = async (req, res) => {
         if (!employee) {
             return res.status(404).json({ message: "Employee not found" });
         }
-
+        employee.shapExplanations = "";
         // Send data to Flask ML API
         const response = await axios.post(
             "http://127.0.0.1:5000/predict",
