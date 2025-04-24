@@ -9,64 +9,70 @@ import {
   SelectItem,
 } from "../ui/select";
 
-// Define the employee type
-type Employee = {
-  id?: string;
-  name: string;
-  email: string;
-  age: string | number;
-  department: string;
-  satisfaction: string | number;
-  gender: string;
-  maritalStatus: string;
-  dob: string;
-  education: string | number;
-  jobInvolvement: string | number;
-  jobLevel: string | number;
-  jobRole: string;
-  jobSatisfaction: string | number;
-  overTime: string;
-  yearsAtCompany: string | number;
-  yearsSinceLastPromotion: string | number;
-  monthlyIncome: string | number;
-  percentSalaryHike: string | number;
-  performanceRating: string | number;
-  workLifeBalance: string | number;
-  environmentSatisfaction: string | number;
-};
+import {
+  addEmployee,
+  editEmployee,
+  Employee,
+  getAllEmployees,
+  removeEmployee,
+} from "@/services/apiEmployee";
 
 const defaultEmployee: Employee = {
-  id: "",
   name: "",
   email: "",
-  age: "",
-  department: "",
-  satisfaction: "",
-  gender: "",
-  maritalStatus: "",
-  dob: "",
-  education: "",
-  jobInvolvement: "",
-  jobLevel: "",
-  jobRole: "",
-  jobSatisfaction: "",
-  overTime: "",
-  yearsAtCompany: "",
-  yearsSinceLastPromotion: "",
-  monthlyIncome: "",
-  percentSalaryHike: "",
-  performanceRating: "",
-  workLifeBalance: "",
-  environmentSatisfaction: "",
+  phone: "",
+  address: "",
+  Age: "",
+  Department: "",
+  Gender: "",
+  MaritalStatus: "",
+  Education: "",
+  JobInvolvement: "",
+  JobLevel: "",
+  JobRole: "",
+  JobSatisfaction: "",
+  OverTime: "",
+  YearsAtCompany: "",
+  YearsSinceLastPromotion: "",
+  MonthlyIncome: "",
+  PercentSalaryHike: "",
+  PerformanceRating: "",
+  WorkLifeBalance: "",
+  EnvironmentSatisfaction: "",
+  attrition: "No",
 };
 
 export default function EmployeeForm() {
   const [tab, setTab] = useState("general");
   const [employee, setEmployee] = useState<Employee>({ ...defaultEmployee });
-  const [employees, setEmployees] = useState<Employee[]>([]);
   const [mode, setMode] = useState<"add" | "edit" | "remove">("add");
-  const [searchName, setSearchName] = useState("");
   const [searchId, setSearchId] = useState("");
+
+  const fixNumericFields = (emp: any) => {
+    const numericFields = [
+      "Age",
+      "Education",
+      "EnvironmentSatisfaction",
+      "JobInvolvement",
+      "JobLevel",
+      "JobSatisfaction",
+      "MonthlyIncome",
+      "PercentSalaryHike",
+      "PerformanceRating",
+      "WorkLifeBalance",
+      "YearsAtCompany",
+      "YearsSinceLastPromotion",
+    ];
+
+    const fixedEmployee = { ...emp };
+    numericFields.forEach((key) => {
+      if (fixedEmployee[key] !== undefined) {
+        fixedEmployee[key] = Number(fixedEmployee[key]);
+      }
+    });
+
+    return fixedEmployee;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -83,27 +89,27 @@ export default function EmployeeForm() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const requiredFields = [
-      "id",
       "name",
-      "gender",
+      "Gender",
       "email",
-      "dob",
-      "maritalStatus",
-      "education",
-      "jobInvolvement",
-      "jobLevel",
-      "jobRole",
-      "jobSatisfaction",
-      "overTime",
-      "yearsAtCompany",
-      "yearsSinceLastPromotion",
-      "monthlyIncome",
-      "percentSalaryHike",
-      "performanceRating",
-      "workLifeBalance",
-      "environmentSatisfaction",
+      "address",
+      "Age",
+      "MaritalStatus",
+      "Education",
+      "JobInvolvement",
+      "JobLevel",
+      "JobRole",
+      "JobSatisfaction",
+      "OverTime",
+      "YearsAtCompany",
+      "YearsSinceLastPromotion",
+      "MonthlyIncome",
+      "PercentSalaryHike",
+      "PerformanceRating",
+      "WorkLifeBalance",
+      "EnvironmentSatisfaction",
     ];
 
     const allFieldsFilled = requiredFields.every((field) => {
@@ -120,23 +126,23 @@ export default function EmployeeForm() {
       return;
     }
 
-    if (mode === "edit") {
-      setEmployees((prev) =>
-        prev.map((emp) => (emp.id === employee.id ? employee : emp))
-      );
-      alert("Employee updated successfully!");
-    } else {
-      // Prevent duplicate IDs
-      if (employees.some((emp) => emp.id === employee.id)) {
-        alert("Employee ID already exists. Please use a unique ID.");
-        return;
+    try {
+      if (mode === "edit") {
+        const fixedEmployee = fixNumericFields(employee);
+        await editEmployee(employee._id!, fixedEmployee);
+        alert("Employee updated successfully!");
+      } else {
+        const fixedEmployee = fixNumericFields(employee);
+        console.log("Adding employee:", fixedEmployee);
+        await addEmployee(fixedEmployee);
+        alert("Employee added successfully!");
       }
-      setEmployees((prev) => [...prev, employee]);
-      alert("Employee added successfully!");
+      setEmployee({ ...defaultEmployee });
+      setMode("add");
+    } catch (error) {
+      console.error("Error saving employee:", error);
+      alert("Failed to save employee.");
     }
-
-    setEmployee({ ...defaultEmployee });
-    setMode("add");
   };
 
   const handleClear = () => {
@@ -144,36 +150,41 @@ export default function EmployeeForm() {
     setMode("add");
   };
 
-  const handleEditSearch = () => {
-    const match = employees.find(
-      (emp) =>
-        emp.name.toLowerCase() === searchName.toLowerCase() ||
-        emp.id === searchId
-    );
-    if (match) {
-      setEmployee({ ...match });
-      setMode("edit");
-    } else {
-      alert("Employee not found.");
+  const handleEditSearch = async () => {
+    try {
+      const allEmployees = await getAllEmployees();
+      const match = allEmployees.find((emp) => emp._id === searchId);
+      if (match) {
+        setEmployee({ ...match });
+        setMode("edit");
+      } else {
+        alert("Employee not found.");
+      }
+    } catch (error) {
+      console.error("Error searching employee:", error);
+      alert("Failed to fetch employees.");
     }
   };
 
-  const handleRemove = () => {
-    const match = employees.find(
-      (emp) =>
-        emp.name.toLowerCase() === searchName.toLowerCase() ||
-        emp.id === searchId
-    );
-    if (match) {
-      setEmployees((prev) => prev.filter((emp) => emp.id !== match.id));
-      alert("Employee removed.");
-    } else {
-      alert("Employee not found.");
+  const handleRemove = async () => {
+    try {
+      const allEmployees = await getAllEmployees();
+      const match = allEmployees.find((emp) => emp._id === searchId);
+
+      if (match) {
+        await removeEmployee(match._id!);
+        alert("Employee removed successfully.");
+      } else {
+        alert("Employee not found.");
+      }
+
+      setSearchId("");
+      setEmployee({ ...defaultEmployee });
+      setMode("add");
+    } catch (error) {
+      console.error("Error removing employee:", error);
+      alert("Failed to remove employee.");
     }
-    setSearchName("");
-    setSearchId("");
-    setEmployee({ ...defaultEmployee });
-    setMode("add");
   };
 
   const inputClass =
@@ -194,38 +205,38 @@ export default function EmployeeForm() {
       case "general":
         return (
           <>
-            {InputField("id", "Employee ID")}
             {InputField("name", "Full Name")}
+            {InputField("Age", "Enter your Age")}
             <Select
-              value={employee.gender}
-              onValueChange={handleSelectChange("gender")}
+              value={employee.Gender}
+              onValueChange={handleSelectChange("Gender")}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Gender" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
               </SelectContent>
             </Select>
             {InputField("email", "Email")}
-            {InputField("dob", "DOB (YYYY-MM-DD)")}
+            {InputField("address", "Enter your Address")}
             <Select
-              value={employee.maritalStatus}
-              onValueChange={handleSelectChange("maritalStatus")}
+              value={employee.MaritalStatus}
+              onValueChange={handleSelectChange("MaritalStatus")}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Marital Status" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="single">Single</SelectItem>
-                <SelectItem value="married">Married</SelectItem>
+                <SelectItem value="Single">Single</SelectItem>
+                <SelectItem value="Married">Married</SelectItem>
+                <SelectItem value="Divorced">Divorced</SelectItem>
               </SelectContent>
             </Select>
             <Select
-              value={String(employee.education)}
-              onValueChange={handleSelectChange("education")}
+              value={String(employee.Education)}
+              onValueChange={handleSelectChange("Education")}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Education" />
@@ -244,31 +255,55 @@ export default function EmployeeForm() {
         return (
           <>
             {InputField(
-              "jobInvolvement",
+              "JobInvolvement",
               "Job Involvement - 1(lower)-4(Higher)"
             )}
-            {InputField("jobLevel", "Job Level")}
+            {InputField("JobLevel", "Job Level")}
             <Select
-              value={employee.jobRole}
-              onValueChange={handleSelectChange("jobRole")}
+              value={employee.Department}
+              onValueChange={handleSelectChange("Department")}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Department" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Research & Development">
+                  Research & Development
+                </SelectItem>
+                <SelectItem value="Human Resources">Human Resources</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={employee.JobRole}
+              onValueChange={handleSelectChange("JobRole")}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Job Role" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="1">Sales Executive</SelectItem>
-                <SelectItem value="2">Research Scientist</SelectItem>
-                <SelectItem value="3">Laboratory Technician</SelectItem>
-                <SelectItem value="4">Manufacturing Director</SelectItem>
+                <SelectItem value="Sales Executive">Sales Executive</SelectItem>
+                <SelectItem value="Research Scientist">
+                  Research Scientist
+                </SelectItem>
+                <SelectItem value="Laboratory Technician">
+                  Laboratory Technician
+                </SelectItem>
+                <SelectItem value="Manufacturing Director">
+                  Manufacturing Director
+                </SelectItem>
+                <SelectItem value="Healthcare Representative">
+                  Healthcare Representative
+                </SelectItem>
               </SelectContent>
             </Select>
             {InputField(
-              "jobSatisfaction",
+              "JobSatisfaction",
               "Job Satisfaction - 1(lower)-4(Higher)"
             )}
             <Select
-              value={employee.overTime}
-              onValueChange={handleSelectChange("overTime")}
+              value={employee.OverTime}
+              onValueChange={handleSelectChange("OverTime")}
             >
               <SelectTrigger>
                 <SelectValue placeholder="OverTime" />
@@ -278,9 +313,9 @@ export default function EmployeeForm() {
                 <SelectItem value="No">No</SelectItem>
               </SelectContent>
             </Select>
-            {InputField("yearsAtCompany", "Years at Company")}
+            {InputField("YearsAtCompany", "Years at Company")}
             {InputField(
-              "yearsSinceLastPromotion",
+              "YearsSinceLastPromotion",
               "Years Since Last Promotion"
             )}
           </>
@@ -288,14 +323,14 @@ export default function EmployeeForm() {
       case "payroll":
         return (
           <>
-            {InputField("monthlyIncome", "Monthly Income")}
-            {InputField("percentSalaryHike", "Percent Salary Hike")}
+            {InputField("MonthlyIncome", "Monthly Income")}
+            {InputField("PercentSalaryHike", "Percent Salary Hike")}
             {InputField(
-              "performanceRating",
+              "PerformanceRating",
               "Performance Rating - 1(Lower)-4(Higher)"
             )}
             {InputField(
-              "workLifeBalance",
+              "WorkLifeBalance",
               "Work-Life Balance - 1(Lower)-4(Higher)"
             )}
           </>
@@ -304,11 +339,11 @@ export default function EmployeeForm() {
         return (
           <>
             {InputField(
-              "environmentSatisfaction",
+              "EnvironmentSatisfaction",
               "Environment Satisfaction - 1(Lower)-4(Higher)"
             )}
             {InputField(
-              "workLifeBalance",
+              "WorkLifeBalance",
               "Work-Life Balance - 1(Lower)-4(Higher)"
             )}
           </>
@@ -336,11 +371,6 @@ export default function EmployeeForm() {
 
       {(mode === "edit" || mode === "remove") && tab === "general" && (
         <div className="flex flex-col gap-3 mb-4">
-          <Input
-            placeholder="Search by Name"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-          />
           <Input
             placeholder="Search by Employee ID"
             value={searchId}
@@ -373,16 +403,6 @@ export default function EmployeeForm() {
         <Button variant="outline" onClick={() => setMode("remove")}>
           Remove Employee
         </Button>
-      </div>
-      <div className="mt-8">
-        <h2 className="font-semibold text-lg">All Employees:</h2>
-        <ul className="text-sm">
-          {employees.map((emp) => (
-            <li key={emp.id}>
-              <strong>{emp.name}</strong> ({emp.id})
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

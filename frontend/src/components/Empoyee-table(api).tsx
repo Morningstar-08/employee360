@@ -72,8 +72,11 @@ export default function EmployeeTableApi() {
           <PlusIcon className="h-4 w-4 mr-1" />
           Add Employee
         </Button>
-        <Button variant="outline" onClick={() => navigate("/edit-employee")}>
+        <Button variant="outline" onClick={() => navigate("/add-employee")}>
           Edit Employee
+        </Button>
+        <Button variant="outline" onClick={() => {}}>
+          Export to Excel
         </Button>
       </div>
 
@@ -85,9 +88,9 @@ export default function EmployeeTableApi() {
           className="border px-2 py-1 rounded-md"
         >
           <option value="">All Departments</option>
-          <option value="">Sales</option>
-          <option value="">Research & Development</option>
-          <option value="">Human Resources</option>
+          <option value="Sales">Sales</option>
+          <option value="Research & Development">Research & Development</option>
+          <option value="Human Resources">Human Resources</option>
           {[...new Set(employees.map((e) => e.Department))].map((dept) => (
             <option key={dept} value={dept}>
               {dept}
@@ -101,15 +104,17 @@ export default function EmployeeTableApi() {
           className="border px-2 py-1 rounded-md"
         >
           <option value="">All Job Roles</option>
-          <option value="Full Time">Sales Executive</option>
-          <option value="Part Time">Research Scientist</option>
-          <option value="Contract">Laboratory Technician</option>
-          <option value="Contract">Manufacturing Director</option>
-          <option value="Contract">Healthcare Representative</option>
-          <option value="Contract">Manager</option>
-          <option value="Contract">Sales Representative</option>
-          <option value="Contract">Research Director</option>
-          <option value="Contract">Human Resources</option>
+          <option value="Sales Executive">Sales Executive</option>
+          <option value="Research Scientist">Research Scientist</option>
+          <option value="Laboratory Technician">Laboratory Technician</option>
+          <option value="Manufacturing Director">Manufacturing Director</option>
+          <option value="Healthcare Representative">
+            Healthcare Representative
+          </option>
+          <option value="Manager">Manager</option>
+          <option value="Sales Representative">Sales Representative</option>
+          <option value="Research Director">Research Director</option>
+          <option value="Human Resources">Human Resources</option>
         </select>
 
         <select
@@ -128,10 +133,10 @@ export default function EmployeeTableApi() {
             <TableHead>Employee ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Department</TableHead>
-            <TableHead>Employment Type</TableHead>
+            <TableHead>Job Role</TableHead>
             <TableHead>Attrition Status</TableHead>
             <TableHead>Environment Satisfaction</TableHead>
-            <TableHead>Overtime (hrs)</TableHead>
+            <TableHead>Overtime</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,7 +145,7 @@ export default function EmployeeTableApi() {
               <TableCell>{emp._id}</TableCell>
               <TableCell>{emp.name}</TableCell>
               <TableCell>{emp.Department}</TableCell>
-              <TableCell>{emp.Department}</TableCell>
+              <TableCell>{emp.JobRole}</TableCell>
               <TableCell>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor(
@@ -151,7 +156,7 @@ export default function EmployeeTableApi() {
                 </span>
               </TableCell>
               <TableCell>{emp.EnvironmentSatisfaction}/5</TableCell>
-              <TableCell>{emp.OverTime} hrs</TableCell>
+              <TableCell>{emp.OverTime}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -22,6 +22,7 @@ def predict():
     try:
         # Get JSON input
         data = request.get_json(force=True)
+        print(data)
         if not data:
             return jsonify({"error": "No input data provided"}), 400
         

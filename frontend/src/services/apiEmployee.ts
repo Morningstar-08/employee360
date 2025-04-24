@@ -1,30 +1,30 @@
 import axios from "axios";
 
 export interface Employee {
-  _id: string;
+  _id?: string;
   name: string;
   email: string;
   phone: string;
   address: string;
-  Age: number;
+  Age: number | string;
   Department: string;
-  Education: number;
-  EnvironmentSatisfaction: number;
+  Education: number | string;
+  EnvironmentSatisfaction: number | string;
   Gender: string;
-  JobInvolvement: number;
-  JobLevel: number;
+  JobInvolvement: number | string;
+  JobLevel: number | string;
   JobRole: string;
-  JobSatisfaction: number;
+  JobSatisfaction: number | string;
   MaritalStatus: string;
-  MonthlyIncome: number;
+  MonthlyIncome: number | string;
   OverTime: string;
-  PercentSalaryHike: number;
-  PerformanceRating: number;
-  WorkLifeBalance: number;
-  YearsAtCompany: number;
-  YearsSinceLastPromotion: number;
+  PercentSalaryHike: number | string;
+  PerformanceRating: number | string;
+  WorkLifeBalance: number | string;
+  YearsAtCompany: number | string;
+  YearsSinceLastPromotion: number | string;
   attrition: string;
-  attritionProbability?: number;
+  attritionProbability?: number | string;
   attritionRiskLevel?: string;
   shapExplanations?: string;
 }
