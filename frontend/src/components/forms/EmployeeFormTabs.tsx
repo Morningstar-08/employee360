@@ -129,7 +129,7 @@ export default function EmployeeForm() {
     try {
       if (mode === "edit") {
         const fixedEmployee = fixNumericFields(employee);
-        await editEmployee(employee._id!, fixedEmployee);
+        await editEmployee(fixedEmployee._id!, fixedEmployee);
         alert("Employee updated successfully!");
       } else {
         const fixedEmployee = fixNumericFields(employee);
@@ -188,8 +188,7 @@ export default function EmployeeForm() {
   };
 
   const inputClass =
-    "w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
-
+    "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400";
   const renderTabContent = () => {
     const InputField = (name: keyof Employee, placeholder: string) => (
       <Input
@@ -207,25 +206,29 @@ export default function EmployeeForm() {
           <>
             {InputField("name", "Full Name")}
             {InputField("Age", "Enter your Age")}
-            <Select
-              value={employee.Gender}
-              onValueChange={handleSelectChange("Gender")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Gender" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex space-x-4">
+              <Select
+                value={employee.Gender}
+                onValueChange={handleSelectChange("Gender")}
+              >
+                <SelectTrigger className="w-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  <SelectValue placeholder="Gender" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+              {InputField("phone", "Enter your Phone Number")}
+            </div>
+
             {InputField("email", "Email")}
             {InputField("address", "Enter your Address")}
             <Select
               value={employee.MaritalStatus}
               onValueChange={handleSelectChange("MaritalStatus")}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <SelectValue placeholder="Marital Status" />
               </SelectTrigger>
               <SelectContent className="bg-white">
@@ -238,7 +241,7 @@ export default function EmployeeForm() {
               value={String(employee.Education)}
               onValueChange={handleSelectChange("Education")}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <SelectValue placeholder="Education" />
               </SelectTrigger>
               <SelectContent className="bg-white">
@@ -259,44 +262,51 @@ export default function EmployeeForm() {
               "Job Involvement - 1(lower)-4(Higher)"
             )}
             {InputField("JobLevel", "Job Level")}
-            <Select
-              value={employee.Department}
-              onValueChange={handleSelectChange("Department")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Department" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="Sales">Sales</SelectItem>
-                <SelectItem value="Research & Development">
-                  Research & Development
-                </SelectItem>
-                <SelectItem value="Human Resources">Human Resources</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={employee.JobRole}
-              onValueChange={handleSelectChange("JobRole")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Job Role" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="Sales Executive">Sales Executive</SelectItem>
-                <SelectItem value="Research Scientist">
-                  Research Scientist
-                </SelectItem>
-                <SelectItem value="Laboratory Technician">
-                  Laboratory Technician
-                </SelectItem>
-                <SelectItem value="Manufacturing Director">
-                  Manufacturing Director
-                </SelectItem>
-                <SelectItem value="Healthcare Representative">
-                  Healthcare Representative
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex space-x-4">
+              <Select
+                value={employee.Department}
+                onValueChange={handleSelectChange("Department")}
+              >
+                <SelectTrigger className="w-64 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  <SelectValue placeholder="Department" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="Sales">Sales</SelectItem>
+                  <SelectItem value="Research & Development">
+                    Research & Development
+                  </SelectItem>
+                  <SelectItem value="Human Resources">
+                    Human Resources
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={employee.JobRole}
+                onValueChange={handleSelectChange("JobRole")}
+              >
+                <SelectTrigger className="w-64 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  <SelectValue placeholder="Job Role" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="Sales Executive">
+                    Sales Executive
+                  </SelectItem>
+                  <SelectItem value="Research Scientist">
+                    Research Scientist
+                  </SelectItem>
+                  <SelectItem value="Laboratory Technician">
+                    Laboratory Technician
+                  </SelectItem>
+                  <SelectItem value="Manufacturing Director">
+                    Manufacturing Director
+                  </SelectItem>
+                  <SelectItem value="Healthcare Representative">
+                    Healthcare Representative
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             {InputField(
               "JobSatisfaction",
               "Job Satisfaction - 1(lower)-4(Higher)"
@@ -305,7 +315,7 @@ export default function EmployeeForm() {
               value={employee.OverTime}
               onValueChange={handleSelectChange("OverTime")}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <SelectValue placeholder="OverTime" />
               </SelectTrigger>
               <SelectContent className="bg-white">

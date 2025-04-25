@@ -1,19 +1,19 @@
 import Sidebar from "@/components/sidebar";
 import SideHeader from "@/components/topbar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+// import { SidebarProvider } from "@/components/ui/sidebar";
 import RetentionPredictionForm from "@/components/forms/RetentionPredictionForm";
 
 export default function RetentionPrediction() {
   return (
-    <SidebarProvider>
+    <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <SidebarInset>
+      <div className="flex-1 flex flex-col overflow-hidden">
         <SideHeader />
-        <div className="flex flex-col flex-1 px-4 py-6 md:px-6">
+        <div className="flex flex-col flex-1 px-4 py-6 md:px-6 overflow-y-auto">
           <h1 className="text-2xl font-semibold mb-4">Retention Prediction</h1>
           <RetentionPredictionForm />
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }

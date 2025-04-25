@@ -57,7 +57,7 @@ export const addEmployee = async (data: Partial<Employee>) => {
 };
 
 export const editEmployee = async (id: string, data: Partial<Employee>) => {
-  const response = await axios.post(`${API_BASE}/editEmployee/${id}`, data);
+  const response = await axios.put(`${API_BASE}/editEmployee/${id}`, data);
   return response.data;
 };
 

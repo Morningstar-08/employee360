@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
@@ -130,6 +130,7 @@ export default function RetentionPredictionForm() {
                     value={formData[field.name as FormField]}
                     onChange={handleChange}
                     required
+                    className="border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               ))}
@@ -230,9 +231,25 @@ export default function RetentionPredictionForm() {
               ))}
 
               <div className="sm:col-span-2 flex justify-end mt-4">
-                <Button type="submit" className="w-full sm:w-auto">
+                {/* <Button
+                  variant="outline"
+                  type="submit"
+                  className="w-full sm:w-auto"
+                >
                   Predict Retention
-                </Button>
+                </Button> */}
+                <button
+                  type="submit"
+                  className="text-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700"
+                >
+                  Predict Retention
+                </button>
+                {/* <button
+                  type="button"
+                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                >
+                  Alternative
+                </button> */}
               </div>
             </form>
           </CardContent>

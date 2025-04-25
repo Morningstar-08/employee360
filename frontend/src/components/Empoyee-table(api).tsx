@@ -66,7 +66,7 @@ export default function EmployeeTableApi() {
   if (loading) return <p className="p-4">Loading employee data...</p>;
 
   return (
-    <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200 mt-4">
+    <div className=" rounded-xl shadow-lg border border-gray-200 mt-4">
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={() => navigate("/add-employee")}>
           <PlusIcon className="h-4 w-4 mr-1" />
