@@ -365,7 +365,7 @@ export default function EmployeeForm() {
 
   return (
     <div className="mx-auto p-6 bg-white rounded-lg shadow">
-      <nav className="flex gap-6 text-blue-600 font-medium border-b pb-2 mb-4">
+      <nav className="flex gap-6 text-blue-500 font-medium border-b pb-2 mb-4">
         {["general", "job", "payroll", "others"].map((item) => (
           <span
             key={item}
@@ -397,20 +397,36 @@ export default function EmployeeForm() {
       <div className="space-y-4">{renderTabContent()}</div>
 
       <div className="mt-6 flex gap-4 mb-4">
-        <Button variant="outline" onClick={handleSave}>
+        <Button
+          className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
+          variant="outline"
+          onClick={handleSave}
+        >
           {mode === "edit" ? "Update" : "Save"}
         </Button>
 
-        <Button variant="outline" onClick={handleClear}>
+        <Button
+          className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
+          variant="outline"
+          onClick={handleClear}
+        >
           Clear
         </Button>
       </div>
 
       <div className="flex gap-2 mb-4">
-        <Button variant="outline" onClick={() => setMode("edit")}>
+        <Button
+          className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
+          variant="outline"
+          onClick={() => setMode("edit")}
+        >
           Edit Existing
         </Button>
-        <Button variant="outline" onClick={() => setMode("remove")}>
+        <Button
+          className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
+          variant="outline"
+          onClick={() => setMode("remove")}
+        >
           Remove Employee
         </Button>
       </div>

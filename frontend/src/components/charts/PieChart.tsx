@@ -1,7 +1,7 @@
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Cell } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 
-const chartColors = ["#3b82f6", "#60a5fa"];
+const chartColors = ["#3b82f6", "#60a5fa", "#a5b4fc", "#dbeafe"];
 
 type ChartDataItem = {
   name: string;
@@ -31,6 +31,7 @@ export function ChartDoughnut({
               nameKey="name"
               cx="50%"
               cy="50%"
+              innerRadius={40}
               outerRadius={70}
               label
             >

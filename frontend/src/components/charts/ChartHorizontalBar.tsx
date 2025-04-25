@@ -22,24 +22,21 @@ interface ChartBarProps {
   color?: string;
 }
 
-export function ChartBar({
+export function ChartBarHorizontal({
   title,
   data,
   color = chartColors[0],
 }: ChartBarProps) {
   return (
     <Card className="shadow-[0_0_10px_rgba(0,0,0,0.25)] border border-gray-100">
-      <CardContent className="pt-2 pb-3 px-3">
-        <h2 className="text-md font-semibold mb-1 text-center">{title}</h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart
-            data={data}
-            margin={{ top: 10, bottom: 1, left: 0, right: 0 }}
-          >
-            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} />
+      <CardContent className="p-4">
+        <h2 className="text-md font-semibold mb-2 text-center">{title}</h2>
+        <ResponsiveContainer width="100%" height={data.length * 45}>
+          <BarChart data={data} layout="vertical">
+            <XAxis type="number" tick={{ fontSize: 12 }} />
+            <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} />
             <Tooltip contentStyle={{ fontSize: "12px" }} />
-            <Bar dataKey="value" fill={color} barSize={37}>
+            <Bar dataKey="value" fill={color} barSize={35}>
               {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={color} />
               ))}

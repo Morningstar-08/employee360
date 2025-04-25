@@ -100,7 +100,7 @@ export default function RetentionPredictionForm() {
                   label: "Monthly Income",
                   name: "monthlyIncome",
                   type: "number",
-                  props: { min: 1000, max: 20000 },
+                  props: { min: 1000, max: 200000 },
                 },
                 {
                   label: "Percent Salary Hike",
@@ -122,7 +122,12 @@ export default function RetentionPredictionForm() {
                 },
               ].map((field) => (
                 <div key={field.name}>
-                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Label
+                    htmlFor={field.name}
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    {field.label}
+                  </Label>
                   <Input
                     name={field.name}
                     type={field.type}
@@ -210,7 +215,12 @@ export default function RetentionPredictionForm() {
                 },
               ].map((field) => (
                 <div key={field.name}>
-                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Label
+                    htmlFor={field.name}
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    {field.label}
+                  </Label>
                   <select
                     name={field.name}
                     value={formData[field.name as FormField]}
@@ -240,7 +250,7 @@ export default function RetentionPredictionForm() {
                 </Button> */}
                 <button
                   type="submit"
-                  className="text-black focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-700"
+                  className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
                 >
                   Predict Retention
                 </button>
