@@ -11,6 +11,7 @@ import { Employee, getAllEmployees } from "@/services/apiEmployee";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent } from "./ui/card";
 const getBadgeColor = (status: Employee["attritionRiskLevel"]) => {
   switch (status) {
     case "low_risk":
@@ -23,6 +24,19 @@ const getBadgeColor = (status: Employee["attritionRiskLevel"]) => {
       return "";
   }
 };
+
+const metrics = [
+  { label: "Total Employees", value: 1267, change: "+10.0%", positive: true },
+  { label: "Total Attrition", value: "234", change: "+22.0%", positive: true },
+  { label: "Attrition %", value: "12%", change: "+2.0%", positive: true },
+  { label: "Average Age", value: 37, change: "-2.0%", positive: false },
+  {
+    label: "Average Monthly Income",
+    value: "$5347",
+    change: "-7.0%",
+    positive: false,
+  },
+];
 
 export default function EmployeeTableApi() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -66,26 +80,62 @@ export default function EmployeeTableApi() {
   if (loading) return <p className="p-4">Loading employee data...</p>;
 
   return (
-    <div className=" rounded-xl shadow-lg border border-gray-200 mt-4">
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => navigate("/add-employee")}>
+    <div className="mt-4 space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {metrics.map((metric, idx) => (
+          <Card
+            key={idx}
+            className="shadow-[0_0_10px_rgba(0,0,0,0.25)] border border-gray-100"
+          >
+            <CardContent className="p-4 space-y-1">
+              <div className="text-lg text-gray-700 flex justify-between items-center">
+                <span>{metric.label}</span>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                    metric.positive
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {metric.change}
+                </span>
+              </div>
+              <div className="text-3xl font-bold">{metric.value}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <div className=" mt-2.5 flex justify-end gap-2">
+        <Button
+          variant="outline"
+          className="border-gray-300"
+          onClick={() => navigate("/add-employee")}
+        >
           <PlusIcon className="h-4 w-4 mr-1" />
           Add Employee
         </Button>
-        <Button variant="outline" onClick={() => navigate("/add-employee")}>
+        <Button
+          variant="outline"
+          className="border-gray-300"
+          onClick={() => navigate("/add-employee")}
+        >
           Edit Employee
         </Button>
-        <Button variant="outline" onClick={() => {}}>
+        <Button
+          variant="outline"
+          className="border-gray-300"
+          onClick={() => {}}
+        >
           Export to Excel
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
         <select
           value={departmentFilter}
           onChange={(e) => setDepartmentFilter(e.target.value)}
-          className="border px-2 py-1 rounded-md"
+          className="border px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">All Departments</option>
           <option value="Sales">Sales</option>
@@ -101,7 +151,7 @@ export default function EmployeeTableApi() {
         <select
           value={jobrolefilter}
           onChange={(e) => setJobroleFilter(e.target.value)}
-          className="border px-2 py-1 rounded-md"
+          className="border px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">All Job Roles</option>
           <option value="Sales Executive">Sales Executive</option>
@@ -120,49 +170,75 @@ export default function EmployeeTableApi() {
         <select
           value={attritionFilter}
           onChange={(e) => setAttritionFilter(e.target.value)}
-          className="border px-2 py-1 rounded-md"
+          className="border px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="">All Attrition</option>
           <option value="Low Risk">Yes</option>
           <option value="Medium Risk">No</option>
         </select>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Employee ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Department</TableHead>
-            <TableHead>Job Role</TableHead>
-            <TableHead>Attrition Status</TableHead>
-            <TableHead>Environment Satisfaction</TableHead>
-            <TableHead>Overtime</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {displayedEmployees.map((emp) => (
-            <TableRow key={emp._id}>
-              <TableCell>{emp._id}</TableCell>
-              <TableCell>{emp.name}</TableCell>
-              <TableCell>{emp.Department}</TableCell>
-              <TableCell>{emp.JobRole}</TableCell>
-              <TableCell>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor(
-                    emp.attritionRiskLevel
-                  )}`}
-                >
-                  {emp.attritionProbability}
-                </span>
-              </TableCell>
-              <TableCell>{emp.EnvironmentSatisfaction}/5</TableCell>
-              <TableCell>{emp.OverTime}</TableCell>
+      <div className="overflow-x-auto rounded-xl mt-2  border-none shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-r border-gray-400">
+              <TableHead className="border-r border-gray-400">
+                Employee ID
+              </TableHead>
+              <TableHead className="border-r border-gray-400">Name</TableHead>
+              <TableHead className="border-r border-gray-400 hidden sm:table-cell">
+                Department
+              </TableHead>
+              <TableHead className="border-r border-gray-400 hidden md:table-cell">
+                Job Role
+              </TableHead>
+              <TableHead className="border-r border-gray-400">
+                Attrition Status
+              </TableHead>
+              <TableHead className="border-r border-gray-400 hidden md:table-cell">
+                Environment Satisfaction
+              </TableHead>
+              <TableHead className="border-r border-gray-400 hidden md:table-cell">
+                Overtime
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {displayedEmployees.map((emp) => (
+              <TableRow key={emp._id}>
+                <TableCell className="border-r border-gray-400">
+                  {emp._id}
+                </TableCell>
+                <TableCell className="border-r border-gray-400">
+                  {emp.name}
+                </TableCell>
+                <TableCell className="border-r border-gray-400 hidden sm:table-cell">
+                  {emp.Department}
+                </TableCell>
+                <TableCell className="border-r border-gray-400 hidden sm:table-cell">
+                  {emp.JobRole}
+                </TableCell>
+                <TableCell className="border-r border-gray-400">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getBadgeColor(
+                      emp.attritionRiskLevel
+                    )}`}
+                  >
+                    {emp.attritionProbability}
+                  </span>
+                </TableCell>
+                <TableCell className="border-r border-gray-400 hidden md:table-cell">
+                  {emp.EnvironmentSatisfaction}/5
+                </TableCell>
+                <TableCell className="border-r border-gray-400 hidden md:table-cell">
+                  {emp.OverTime}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       {/* Pagination Controls */}
-      <div className="flex justify-between items-center pt-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center pt-2 gap-2">
         <span className="text-sm">
           Page {page} of {totalPages}
         </span>

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/services/apiUser";
 import { Card, CardContent } from "./ui/card";
 
@@ -14,7 +13,6 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -37,9 +35,9 @@ export function LoginForm({
         localStorage.setItem("token", token);
       }
       if (role === "HR_MANAGER") {
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
       } else {
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
       }
     } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -52,8 +50,13 @@ export function LoginForm({
 
   console.log(error);
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
-      <Card className="overflow-hidden bg-white">
+    <div
+      className={cn(
+        "shadow-[0_0_10px_rgba(0,0,0,0.35)] border-none flex flex-col rounded-2xl gap-6",
+        className
+      )}
+    >
+      <Card className="border-none overflow-hidden bg-white">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-10">
@@ -70,6 +73,7 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={email}
                   onChange={({ target }) => setEmail(target.value)}
                 />
@@ -88,6 +92,7 @@ export function LoginForm({
                   id="password"
                   type="password"
                   required
+                  className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={password}
                   onChange={({ target }) => {
                     setPassword(target.value);
@@ -117,10 +122,6 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }

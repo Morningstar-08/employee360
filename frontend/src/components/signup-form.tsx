@@ -61,8 +61,14 @@ export function SignupForm({
     }
   };
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden bg-white">
+    <div
+      className={cn(
+        "shadow-[0_0_10px_rgba(0,0,0,0.35)] border-none flex flex-col rounded-2xl gap-6",
+        className
+      )}
+      {...props}
+    >
+      <Card className="border-none overflow-hidden bg-white">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8 " onSubmit={handleSubmit}>
             <div className="flex flex-col gap-7">
@@ -79,6 +85,7 @@ export function SignupForm({
                   type="name"
                   placeholder="Full name"
                   required
+                  className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -92,6 +99,7 @@ export function SignupForm({
                   type="email"
                   placeholder="test@example.com"
                   required
+                  className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -107,7 +115,10 @@ export function SignupForm({
                     setRole(e);
                   }}
                 >
-                  <SelectTrigger id="role">
+                  <SelectTrigger
+                    className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    id="role"
+                  >
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -125,6 +136,7 @@ export function SignupForm({
                   id="password"
                   type="password"
                   required
+                  className="border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
@@ -134,11 +146,7 @@ export function SignupForm({
               {error && (
                 <p className="text-red-500 text-sm text-center">{error}</p>
               )}
-              <Button
-                variant="outline"
-                type="submit"
-                className="bg-blue-200 w-[60%] ml-17"
-              >
+              <Button type="submit" className="bg-blue-200 w-[60%] ml-17">
                 Signup
               </Button>
 

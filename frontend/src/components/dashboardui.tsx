@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChartDoughnut } from "@/components/charts/piechart";
+import { ChartDoughnut } from "@/components/charts/PieChart";
 import { ChartBar } from "@/components/charts/ChartBar";
 import { ChartBarHorizontal } from "@/components/charts/ChartHorizontalBar";
 import {
@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
+import { Component } from "./charts/AreaChart";
 const chartColors = ["#3b82f6", "#60a5fa"];
 
 const jobStatsData = [
@@ -27,19 +27,6 @@ const jobStatsData = [
   { name: "Oct", Total: 70, Attrition: 60 },
   { name: "Nov", Total: 65, Attrition: 50 },
   { name: "Dec", Total: 85, Attrition: 70 },
-];
-
-const metrics = [
-  { label: "Total Employees", value: 1267, change: "+10.0%", positive: true },
-  { label: "Total Attrition", value: "234", change: "+22.0%", positive: true },
-  { label: "Attrition %", value: "12%", change: "+2.0%", positive: true },
-  { label: "Average Age", value: 37, change: "-2.0%", positive: false },
-  {
-    label: "Average Monthly Income",
-    value: "$5347",
-    change: "-7.0%",
-    positive: false,
-  },
 ];
 
 // Chart datasets
@@ -82,30 +69,7 @@ export default function DashboardUI() {
   return (
     <div className="p-3 space-y-6">
       {/* Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {metrics.map((metric, idx) => (
-          <Card
-            key={idx}
-            className="shadow-[0_0_10px_rgba(0,0,0,0.25)] border border-gray-100"
-          >
-            <CardContent className="p-4 space-y-1">
-              <div className="text-lg text-gray-700 flex justify-between items-center">
-                <span>{metric.label}</span>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    metric.positive
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
-                  }`}
-                >
-                  {metric.change}
-                </span>
-              </div>
-              <div className="text-3xl font-bold">{metric.value}</div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {/* Doughnut: Gender vs Attrition */}
         <ChartDoughnut title="Gender vs Attrition" data={genderAttritionData} />
@@ -128,6 +92,7 @@ export default function DashboardUI() {
           data={jobSatisfactionData}
         />
       </div>
+      <Component />
       {/* Monthly Job Stats */}
       <Card className="shadow-[0_0_10px_rgba(0,0,0,0.25)] border border-gray-100">
         <CardContent className="p-4">
