@@ -10,7 +10,6 @@ export default function RetentionPrediction() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <SideHeader />
         <div className="flex flex-col flex-1 px-4 py-6 md:px-6 overflow-y-auto">
-          <h1 className="text-2xl font-semibold mb-4">Retention Prediction</h1>
           <RetentionPredictionForm />
         </div>
       </div>

@@ -65,6 +65,7 @@ const removeEmployee = async (req, res) => {
     const updated = await Employee.findByIdAndUpdate(
       req.params.id,
       { attrition: "Yes" },
+      { leavingMonth: req.body.leavingMonth },
       { new: true }
     );
 

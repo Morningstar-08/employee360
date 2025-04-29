@@ -8,7 +8,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "@/contexts/userContext";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -26,6 +27,13 @@ const Sidebar = () => {
       setEmployeeOpen(true);
     }
   }, [currentPath]);
+
+  const { clearUser } = useContext(UserContext)!;
+
+  const handleLogout = () => {
+    clearUser();
+    navigate("/login");
+  };
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -143,7 +151,7 @@ const Sidebar = () => {
         <div className="mt-auto border-t px-4 py-4">
           <ul className="space-y-2">
             <li
-              onClick={() => handleNavigate("/login")}
+              onClick={handleLogout}
               className="px-4 py-2 flex items-center space-x-3 rounded-md transition-all duration-200 hover:scale-105 cursor-pointer hover:bg-gray-100 text-red-600 font-semibold"
             >
               <LogOut className="w-5 h-5" />

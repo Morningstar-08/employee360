@@ -24,6 +24,7 @@ export interface Employee {
   YearsAtCompany: number | string;
   YearsSinceLastPromotion: number | string;
   attrition: string;
+  leavingMonth: string;
   attritionProbability?: number | string;
   attritionRiskLevel?: string;
   shapExplanations?: string;
@@ -61,8 +62,11 @@ export const editEmployee = async (id: string, data: Partial<Employee>) => {
   return response.data;
 };
 
-export const removeEmployee = async (id: string) => {
-  const response = await axios.patch(`${API_BASE}/removeEmployee/${id}`);
+export const removeEmployee = async (id: string, leavingMonth: string) => {
+  const response = await axios.patch(
+    `${API_BASE}/removeEmployee/${id}`,
+    leavingMonth
+  );
   return response.data;
 };
 
