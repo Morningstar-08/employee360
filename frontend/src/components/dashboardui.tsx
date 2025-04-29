@@ -11,61 +11,156 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Component } from "./charts/AreaChart";
+import { AreaChartComponent } from "./charts/AreaChart";
 const chartColors = ["#3b82f6", "#60a5fa"];
+import { useEffect, useState } from "react";
+import { getAllEmployees } from "@/services/apiEmployee";
+import { Employee } from "@/services/apiEmployee";
 
-const jobStatsData = [
-  { name: "Jan", Total: 60, Attrition: 50 },
-  { name: "Feb", Total: 80, Attrition: 60 },
-  { name: "Mar", Total: 90, Attrition: 70 },
-  { name: "Apr", Total: 75, Attrition: 65 },
-  { name: "May", Total: 50, Attrition: 45 },
-  { name: "Jun", Total: 70, Attrition: 60 },
-  { name: "Jul", Total: 85, Attrition: 70 },
-  { name: "Aug", Total: 100, Attrition: 77 },
-  { name: "Sep", Total: 90, Attrition: 65 },
-  { name: "Oct", Total: 70, Attrition: 60 },
-  { name: "Nov", Total: 65, Attrition: 50 },
-  { name: "Dec", Total: 85, Attrition: 70 },
-];
-
-// Chart datasets
-const genderAttritionData = [
-  { name: "Male Attrition", value: 180 },
-  { name: "Female Attrition", value: 120 },
-];
-
-const jobLevelData = [
-  { name: "Lvl-1", value: 80 },
-  { name: "Lvl-2", value: 60 },
-  { name: "Lvl-3", value: 40 },
-  { name: "Lvl-4", value: 30 },
-  { name: "Lvl-5", value: 20 },
-];
-
-const ageGroupData = [
-  { name: "<25", value: 30 },
-  { name: "25-34", value: 80 },
-  { name: "35-44", value: 60 },
-  { name: "45-54", value: 40 },
-  { name: "55+", value: 20 },
-];
-
-const jobSatisfactionData = [
-  { name: "1", value: 40 },
-  { name: "2", value: 60 },
-  { name: "3", value: 90 },
-  { name: "4", value: 45 },
-];
-
-const yearsSincePromotionData = [
-  { name: "0", value: 100 },
-  { name: "1-2", value: 70 },
-  { name: "3-4", value: 40 },
-  { name: "5+", value: 25 },
-];
+//
 
 export default function DashboardUI() {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const data = await getAllEmployees();
+        setEmployees(data);
+      } catch (err) {
+        console.error("Error fetching employee data", err);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  const genderAttritionData = [
+    {
+      name: "Male Attrition",
+      value: employees.filter(
+        (e) => e.Gender === "Male" && e.attrition === "Yes"
+      ).length,
+    },
+    {
+      name: "Female Attrition",
+      value: employees.filter(
+        (e) => e.Gender === "Female" && e.attrition === "Yes"
+      ).length,
+    },
+  ];
+
+  // ✅ Chart 2: Attrition by Age Group
+  const ageGroupData = [
+    {
+      name: "<25",
+      value: employees.filter(
+        (e) => e.attrition === "Yes" && Number(e.Age) < 25
+      ).length,
+    },
+    {
+      name: "25-34",
+      value: employees.filter(
+        (e) =>
+          e.attrition === "Yes" && Number(e.Age) >= 25 && Number(e.Age) < 35
+      ).length,
+    },
+    {
+      name: "35-44",
+      value: employees.filter(
+        (e) =>
+          e.attrition === "Yes" && Number(e.Age) >= 35 && Number(e.Age) < 45
+      ).length,
+    },
+    {
+      name: "45-54",
+      value: employees.filter(
+        (e) =>
+          e.attrition === "Yes" && Number(e.Age) >= 45 && Number(e.Age) < 55
+      ).length,
+    },
+    {
+      name: "55+",
+      value: employees.filter(
+        (e) => e.attrition === "Yes" && Number(e.Age) >= 55
+      ).length,
+    },
+  ];
+
+  // ✅ Chart 3: Attrition by Job Level
+  const jobLevelData = [1, 2, 3, 4, 5].map((level) => ({
+    name: `Lvl-${level}`,
+    value: employees.filter(
+      (e) => e.JobLevel === level && e.attrition === "Yes"
+    ).length,
+  }));
+
+  // ✅ Chart 4: Attrition by Years Since Last Promotion
+  const yearsSincePromotionData = [
+    {
+      name: "0",
+      value: employees.filter(
+        (e) => e.attrition === "Yes" && e.YearsSinceLastPromotion === 0
+      ).length,
+    },
+    {
+      name: "1-2",
+      value: employees.filter(
+        (e) =>
+          e.attrition === "Yes" &&
+          Number(e.YearsSinceLastPromotion) >= 1 &&
+          Number(e.YearsSinceLastPromotion) <= 2
+      ).length,
+    },
+    {
+      name: "3-4",
+      value: employees.filter(
+        (e) =>
+          e.attrition === "Yes" &&
+          Number(e.YearsSinceLastPromotion) >= 3 &&
+          Number(e.YearsSinceLastPromotion) <= 4
+      ).length,
+    },
+    {
+      name: "5+",
+      value: employees.filter(
+        (e) => e.attrition === "Yes" && Number(e.YearsSinceLastPromotion) >= 5
+      ).length,
+    },
+  ];
+
+  // ✅ Chart 5: Attrition by Job Satisfaction
+  const jobSatisfactionData = [1, 2, 3, 4].map((level) => ({
+    name: `${level}`,
+    value: employees.filter(
+      (e) => e.JobSatisfaction === level && e.attrition === "Yes"
+    ).length,
+  }));
+
+  // ✅ Chart 6: Monthly Attrition using leavingMonth
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const jobStatsData = months.map((month) => {
+    const total = employees.filter((e) => e.leavingMonth === month).length;
+    const attrition = employees.filter(
+      (e) => e.attrition === "Yes" && e.leavingMonth === month
+    ).length;
+    return { name: month, Total: total + 10, Attrition: attrition }; // optional +10 to show contrast visually
+  });
+
   return (
     <div className="p-3 space-y-6">
       {/* Metrics Cards */}
@@ -92,7 +187,7 @@ export default function DashboardUI() {
           data={jobSatisfactionData}
         />
       </div>
-      <Component />
+      <AreaChartComponent />
       {/* Monthly Job Stats */}
       <Card className="shadow-[0_0_10px_rgba(0,0,0,0.25)] border border-gray-100">
         <CardContent className="p-4">

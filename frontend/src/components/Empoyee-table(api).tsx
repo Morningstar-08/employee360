@@ -25,19 +25,6 @@ const getBadgeColor = (status: Employee["attritionRiskLevel"]) => {
   }
 };
 
-const metrics = [
-  { label: "Total Employees", value: 1267, change: "+10.0%", positive: true },
-  { label: "Total Attrition", value: "234", change: "+22.0%", positive: true },
-  { label: "Attrition %", value: "12%", change: "+2.0%", positive: true },
-  { label: "Average Age", value: 37, change: "-2.0%", positive: false },
-  {
-    label: "Average Monthly Income",
-    value: "$5347",
-    change: "-7.0%",
-    positive: false,
-  },
-];
-
 export default function EmployeeTableApi() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const navigate = useNavigate();
@@ -47,6 +34,66 @@ export default function EmployeeTableApi() {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [jobrolefilter, setJobroleFilter] = useState("");
   const [attritionFilter, setAttritionFilter] = useState("");
+  const totalEmployees = employees.length;
+  const totalAttrition = employees.filter(
+    (emp) => emp.attrition === "Yes"
+  ).length;
+
+  // Avoid division by zero
+  const attritionPercentage = totalEmployees
+    ? ((totalAttrition / totalEmployees) * 100).toFixed(1)
+    : "0";
+
+  // Compute average age
+  const averageAge = totalEmployees
+    ? Math.round(
+        employees.reduce((sum, emp) => sum + Number(emp.Age), 0) /
+          totalEmployees
+      )
+    : 0;
+
+  // Compute average income
+  const averageIncome = totalEmployees
+    ? Math.round(
+        employees.reduce((sum, emp) => sum + Number(emp.MonthlyIncome), 0) /
+          totalEmployees
+      )
+    : 0;
+
+  // Optionally hardcode or compute change % vs previous snapshot if you store history
+
+  const metrics = [
+    {
+      label: "Total Employees",
+      value: totalEmployees,
+      change: "+10.0%", // you can make this dynamic later
+      positive: true,
+    },
+    {
+      label: "Total Attrition",
+      value: totalAttrition,
+      change: "+22.0%", // placeholder
+      positive: true,
+    },
+    {
+      label: "Attrition %",
+      value: `${attritionPercentage}%`,
+      change: "+2.0%", // placeholder
+      positive: true,
+    },
+    {
+      label: "Average Age",
+      value: averageAge,
+      change: "-2.0%", // placeholder
+      positive: false,
+    },
+    {
+      label: "Average Monthly Income",
+      value: `$${averageIncome}`,
+      change: "-7.0%", // placeholder
+      positive: false,
+    },
+  ];
 
   const filteredEmployees = employees.filter((emp) => {
     return (
@@ -177,6 +224,7 @@ export default function EmployeeTableApi() {
           <option value="Medium Risk">No</option>
         </select>
       </div>
+
       <div className="overflow-x-auto rounded-xl mt-2  border-none shadow-[0_0_10px_rgba(0,0,0,0.5)]">
         <Table>
           <TableHeader>
