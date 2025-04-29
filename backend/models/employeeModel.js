@@ -126,6 +126,24 @@ const EmployeeSchema = new mongoose.Schema({
     enum: ["Yes", "No"],
     required: true,
   },
+  leavingMonth: {
+    type: String,
+    enum: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    default: "",
+  },
 
   // ML Output (To be updated after prediction)
   attritionProbability: {

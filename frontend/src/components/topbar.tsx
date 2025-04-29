@@ -1,8 +1,10 @@
+import { UserContext } from "@/contexts/userContext";
 import { Bell, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 const SideHeader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useContext(UserContext)!;
 
   // Dispatch event so Sidebar can listen
   const toggleSidebar = () => {
@@ -26,7 +28,9 @@ const SideHeader = () => {
       </div>
 
       <div className="relative w-1/2">
-        <p className="ml-10 text-lg font-semibold">Welcome Back, Gavano 🌟</p>
+        <p className="ml-10 text-lg font-semibold">
+          Welcome Back, {user?.name} 🌟
+        </p>
       </div>
 
       <div className="flex items-center space-x-4">
@@ -38,8 +42,8 @@ const SideHeader = () => {
             className="w-8 h-8 rounded-full"
           />
           <div>
-            <p className="text-sm font-semibold">Gavano</p>
-            <p className="text-xs text-gray-500">HR Manager</p>
+            <p className="text-sm font-semibold">{user?.name}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
           </div>
         </div>
       </div>

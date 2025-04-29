@@ -40,6 +40,7 @@ const defaultEmployee: Employee = {
   WorkLifeBalance: "",
   EnvironmentSatisfaction: "",
   attrition: "No",
+  leavingMonth: "",
 };
 
 export default function EmployeeForm() {
@@ -171,8 +172,17 @@ export default function EmployeeForm() {
       const allEmployees = await getAllEmployees();
       const match = allEmployees.find((emp) => emp._id === searchId);
 
+      const leavingMonth = window.prompt(
+        "Enter the employee's leaving month (e.g., 'March')"
+      );
+
+      if (!leavingMonth || leavingMonth.trim() === "") {
+        alert("Leaving month is required to remove the employee.");
+        return;
+      }
+
       if (match) {
-        await removeEmployee(match._id!);
+        await removeEmployee(match._id!, leavingMonth);
         alert("Employee removed successfully.");
       } else {
         alert("Employee not found.");
