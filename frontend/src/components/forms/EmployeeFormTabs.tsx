@@ -199,23 +199,101 @@ export default function EmployeeForm() {
 
   const inputClass =
     "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400";
-  const renderTabContent = () => {
-    const InputField = (name: keyof Employee, placeholder: string) => (
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateInput = (
+    name: string,
+    value: string,
+    props?: React.InputHTMLAttributes<HTMLInputElement>
+  ) => {
+    let error = "";
+
+    if (props?.type === "number") {
+      const num = Number(value);
+      const min = props.min ? Number(props.min) : undefined;
+      const max = props.max ? Number(props.max) : undefined;
+
+      if (
+        value &&
+        (isNaN(num) ||
+          (min !== undefined && num < min) ||
+          (max !== undefined && num > max))
+      ) {
+        error = `Value must be between ${min} and ${max}`;
+      }
+    }
+
+    if (props?.pattern && value) {
+      const regex = new RegExp(`^${props.pattern}$`);
+      if (!regex.test(value)) {
+        error = `Invalid format`;
+      }
+    }
+    if (
+      (name === "YearsAtCompany" || name === "YearsSinceLastPromotion") &&
+      employee.YearsAtCompany !== undefined &&
+      employee.YearsSinceLastPromotion !== undefined
+    ) {
+      const yearsAtCompany =
+        name === "YearsAtCompany"
+          ? Number(value)
+          : Number(employee.YearsAtCompany);
+      const yearsSinceLastPromotion =
+        name === "YearsSinceLastPromotion"
+          ? Number(value)
+          : Number(employee.YearsSinceLastPromotion);
+
+      if (yearsAtCompany < yearsSinceLastPromotion) {
+        error =
+          name === "YearsAtCompany"
+            ? "Years at Company must be ≥ Years Since Last Promotion"
+            : "Years Since Last Promotion must be ≤ Years at Company";
+      }
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const InputField = (
+    name: keyof Employee,
+    placeholder: string,
+    props?: React.InputHTMLAttributes<HTMLInputElement>
+  ) => (
+    <div className="mb-4">
       <Input
         name={name}
         value={employee[name]}
         placeholder={placeholder}
-        onChange={handleChange}
+        onChange={(e) => {
+          const value = e.target.value;
+          validateInput(name, value, props);
+          handleChange(e);
+        }}
+        type={props?.type}
+        min={props?.min}
+        max={props?.max}
+        pattern={props?.pattern}
+        inputMode={props?.inputMode}
         className={inputClass}
       />
-    );
+      {errors[name] && (
+        <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
+      )}
+    </div>
+  );
 
+  const renderTabContent = () => {
     switch (tab) {
       case "general":
         return (
           <>
-            {InputField("name", "Full Name")}
-            {InputField("Age", "Enter your Age")}
+            {InputField("name", "Full Name", { required: true })}
+            {InputField("Age", "Enter Age", {
+              type: "number",
+              min: 18,
+              max: 65,
+              required: true,
+            })}
             <div className="flex space-x-4">
               <Select
                 value={employee.Gender}
@@ -229,11 +307,22 @@ export default function EmployeeForm() {
                   <SelectItem value="Female">Female</SelectItem>
                 </SelectContent>
               </Select>
-              {InputField("phone", "Enter your Phone Number")}
+              {InputField("phone", "Enter Phone Number", {
+                type: "tel",
+                pattern: "[0-9]{10}",
+                maxLength: 10,
+                inputMode: "numeric",
+                title: "Enter a 10-digit phone number",
+                required: true,
+              })}
             </div>
-
-            {InputField("email", "Email")}
-            {InputField("address", "Enter your Address")}
+            {InputField("email", "Email", {
+              type: "email",
+              required: true,
+            })}
+            {InputField("address", "Enter Address", {
+              required: true,
+            })}
             <Select
               value={employee.MaritalStatus}
               onValueChange={handleSelectChange("MaritalStatus")}
@@ -269,9 +358,20 @@ export default function EmployeeForm() {
           <>
             {InputField(
               "JobInvolvement",
-              "Job Involvement - 1(lower)-4(Higher)"
+              "Job Involvement - 1(lower)-4(Higher)",
+              {
+                type: "number",
+                min: 1,
+                max: 4,
+                required: true,
+              }
             )}
-            {InputField("JobLevel", "Job Level")}
+            {InputField("JobLevel", "Job Level - 1(lower)-4(Higher)", {
+              type: "number",
+              min: 1,
+              max: 4,
+              required: true,
+            })}
             <div className="flex space-x-4">
               <Select
                 value={employee.Department}
@@ -319,7 +419,13 @@ export default function EmployeeForm() {
             </div>
             {InputField(
               "JobSatisfaction",
-              "Job Satisfaction - 1(lower)-4(Higher)"
+              "Job Satisfaction - 1(lower)-4(Higher)",
+              {
+                type: "number",
+                min: 1,
+                max: 4,
+                required: true,
+              }
             )}
             <Select
               value={employee.OverTime}
@@ -333,25 +439,43 @@ export default function EmployeeForm() {
                 <SelectItem value="No">No</SelectItem>
               </SelectContent>
             </Select>
-            {InputField("YearsAtCompany", "Years at Company")}
+            {InputField("YearsAtCompany", "Years at Company", {
+              type: "number",
+              min: 0,
+              max: 40,
+            })}
             {InputField(
               "YearsSinceLastPromotion",
-              "Years Since Last Promotion"
+              "Years Since Last Promotion",
+              {
+                type: "number",
+                min: 0,
+                max: 20,
+              }
             )}
           </>
         );
       case "payroll":
         return (
           <>
-            {InputField("MonthlyIncome", "Monthly Income")}
-            {InputField("PercentSalaryHike", "Percent Salary Hike")}
+            {InputField("MonthlyIncome", "Monthly Income", {
+              type: "number",
+              min: 1000,
+              max: 1000000,
+            })}
+            {InputField("PercentSalaryHike", "Salary Hike ( % )", {
+              type: "number",
+              min: 0,
+              max: 100,
+            })}
             {InputField(
               "PerformanceRating",
-              "Performance Rating - 1(Lower)-4(Higher)"
-            )}
-            {InputField(
-              "WorkLifeBalance",
-              "Work-Life Balance - 1(Lower)-4(Higher)"
+              "Performance Rating - 1(Lower)-4(Higher)",
+              {
+                type: "number",
+                min: 1,
+                max: 4,
+              }
             )}
           </>
         );
@@ -360,11 +484,21 @@ export default function EmployeeForm() {
           <>
             {InputField(
               "EnvironmentSatisfaction",
-              "Environment Satisfaction - 1(Lower)-4(Higher)"
+              "Environment Satisfaction - 1(Lower)-4(Higher)",
+              {
+                type: "number",
+                min: 1,
+                max: 4,
+              }
             )}
             {InputField(
               "WorkLifeBalance",
-              "Work-Life Balance - 1(Lower)-4(Higher)"
+              "Work-Life Balance - 1(Lower)-4(Higher)",
+              {
+                type: "number",
+                min: 1,
+                max: 4,
+              }
             )}
           </>
         );
@@ -372,7 +506,6 @@ export default function EmployeeForm() {
         return null;
     }
   };
-
   return (
     <div className="mx-auto p-6 bg-white rounded-lg shadow">
       <nav className="flex gap-6 text-blue-500 font-medium border-b pb-2 mb-4">

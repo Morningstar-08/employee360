@@ -14,11 +14,6 @@ import {
 } from "recharts";
 import { useState } from "react";
 
-const dummyPredictionData = [
-  { name: "Likely", value: 65 },
-  { name: "Unlikely", value: 35 },
-];
-
 const initialFormState = {
   Age: "",
   JobLevel: "",
@@ -44,6 +39,13 @@ export default function RetentionPredictionForm() {
   type FormField = keyof typeof initialFormState;
   type FormData = Record<FormField, string>;
 
+  const [predictionData, setPredictionData] = useState([
+    { name: "Likely", value: 0 },
+    { name: "Unlikely", value: 0 },
+  ]);
+
+  const [reasons, setReasons] = useState<string[]>([]);
+
   const [formData, setFormData] = useState<FormData>(initialFormState);
 
   const handleChange = (
@@ -53,10 +55,31 @@ export default function RetentionPredictionForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    setShowGraph(true);
+
+    try {
+      const response = await fetch("/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error("Prediction failed");
+
+      const result = await response.json();
+
+      const likelihood = result.attrition;
+      setPredictionData([
+        { name: "Likely", value: Math.round(likelihood * 100) },
+        { name: "Unlikely", value: Math.round((1 - likelihood) * 100) },
+      ]);
+
+      setReasons(result.reasons.slice(0, 3));
+      setShowGraph(true);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -241,25 +264,12 @@ export default function RetentionPredictionForm() {
               ))}
 
               <div className="sm:col-span-2 flex justify-end mt-4">
-                {/* <Button
-                  variant="outline"
-                  type="submit"
-                  className="w-full sm:w-auto"
-                >
-                  Predict Retention
-                </Button> */}
                 <button
                   type="submit"
                   className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500"
                 >
                   Predict Retention
                 </button>
-                {/* <button
-                  type="button"
-                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                >
-                  Alternative
-                </button> */}
               </div>
             </form>
           </CardContent>
@@ -267,7 +277,7 @@ export default function RetentionPredictionForm() {
 
         {/* Prediction Chart */}
         {showGraph && (
-          <Card className="shadow-xl border border-gray-200">
+          <Card className="shadow-[0_0_10px_rgba(0,0,0,0.25)]  border-gray-200">
             <CardHeader>
               <CardTitle className="text-lg sm:text-xl font-semibold text-blue-600 text-center">
                 Prediction Result
@@ -275,27 +285,29 @@ export default function RetentionPredictionForm() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={dummyPredictionData}>
+                <BarChart data={predictionData}>
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
                   <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+              {reasons.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-md font-semibold mb-2 text-gray-700">
+                    Top 3 Reasons for Predicted Attrition:
+                  </h3>
+                  <ul className="list-disc pl-5 text-sm text-gray-600">
+                    {reasons.map((reason, index) => (
+                      <li key={index}>{reason}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
       </div>
-      {/* {Object.values(formData).some((val) => val !== "") && (
-        <div className="mt-6 w-full max-w-4xl bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Form Data Preview:
-          </h2>
-          <pre className="text-sm text-gray-700 whitespace-pre-wrap">
-            {JSON.stringify(formData, null, 2)}
-          </pre>
-        </div>
-      )} */}
     </div>
   );
 }
