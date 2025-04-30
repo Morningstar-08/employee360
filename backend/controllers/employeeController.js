@@ -9,6 +9,7 @@ const addEmployee = async (req, res) => {
     if (employeeExists) {
       return res.status(400).json({ message: "User already exists" });
     }
+    console.log("Creating new employee:", req.body);
     const employee = new Employee(req.body);
     const response = await axios.post(
       "http://127.0.0.1:5000/predict",
