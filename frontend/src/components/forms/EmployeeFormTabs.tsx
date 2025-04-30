@@ -390,16 +390,26 @@ export default function EmployeeForm() {
       </nav>
 
       {(mode === "edit" || mode === "remove") && tab === "general" && (
-        <div className="flex flex-col gap-3 mb-4">
+        <div className="flex justify-center flex-col gap-3 mb-4">
           <Input
             placeholder="Search by Employee ID"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
           />
           {mode === "edit" ? (
-            <Button onClick={handleEditSearch}>Search & Edit</Button>
+            <button
+              onClick={handleEditSearch}
+              className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-100 ms-100 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500 w-auto"
+            >
+              Search & Edit
+            </button>
           ) : (
-            <Button onClick={handleRemove}>Remove</Button>
+            <Button
+              onClick={handleRemove}
+              className="text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-100 ms-100 mb-2 dark:bg-blue-400 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-500 w-auto"
+            >
+              Remove
+            </Button>
           )}
         </div>
       )}
