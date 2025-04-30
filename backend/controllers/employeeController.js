@@ -11,19 +11,19 @@ const addEmployee = async (req, res) => {
     }
     console.log("Creating new employee:", req.body);
     const employee = new Employee(req.body);
-    // const response = await axios.post(
-    //   "http://ml-service:5000/predict",
-    //   employee
-    // );
-    // console.log("Response from Flask API:", response.data);
+    const response = await axios.post(
+      "http://localhost:5000/predict",
+      employee
+    );
+    console.log("Response from Flask API:", response.data);
 
-    // // Extract the response fields
-    // const { attrition_probability, attrition_class, reasons } = response.data;
+    // Extract the response fields
+    const { attrition_probability, attrition_class, reasons } = response.data;
 
-    // // Update employee document
-    // employee.attritionProbability = attrition_probability;
-    // employee.attritionRiskLevel = attrition_class;
-    // employee.shapExplanations = reasons;
+    // Update employee document
+    employee.attritionProbability = attrition_probability;
+    employee.attritionRiskLevel = attrition_class;
+    employee.shapExplanations = reasons;
     await employee.save();
 
     res.status(201).json(employee);

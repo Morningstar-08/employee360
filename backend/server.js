@@ -12,11 +12,11 @@ const app = express();
 
 //Middleware
 app.use(
-    cors({
-        origin: process.env.CLIENT_URL || "*",
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
+  cors({
+    origin: process.env.CLIENT_URL || "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,7 +26,7 @@ connectDB();
 
 //Routes
 app.get("/", (req, res) => {
-    res.send("Welcome to EMPLOYEE360 API");
+  res.send("Welcome to EMPLOYEE360 API");
 });
 
 app.use("/api/auth", authRoutes);
@@ -36,5 +36,5 @@ app.use("/api/predict", attritionRoutes);
 
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
