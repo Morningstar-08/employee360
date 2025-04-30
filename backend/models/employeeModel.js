@@ -141,6 +141,7 @@ const EmployeeSchema = new mongoose.Schema({
       "October",
       "November",
       "December",
+      "",
     ],
     default: "",
   },
