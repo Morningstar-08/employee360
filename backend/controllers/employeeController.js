@@ -12,7 +12,7 @@ const addEmployee = async (req, res) => {
     console.log("Creating new employee:", req.body);
     const employee = new Employee(req.body);
     const response = await axios.post(
-      "http://localhost:5000/predict",
+      "http://ml-service:5000/predict",
       employee
     );
     console.log("Response from Flask API:", response.data);
