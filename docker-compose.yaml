@@ -18,6 +18,8 @@ services:
       - 5000:5000
     volumes:
       - pip_cache:/root/.cache/pip
+    networks:
+      - employee360
 
   api:
     build:
