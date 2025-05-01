@@ -10,7 +10,7 @@ pipeline {
             steps {
                 // Change directory and run docker-compose in the same shell invocation
                 bat '''
-                    docker-compose up -d
+                    docker-compose up -d --build
                 '''
             }
         }
