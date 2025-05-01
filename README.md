@@ -52,22 +52,22 @@ git clone https://github.com/yourusername/employee360.git
 cd employee360
 
 # 2. Install backend
-cd server && npm install
+cd frontend && npm install
 
 # 3. Install frontend
-cd ../client && npm install
+cd ../frontend && npm install
 
 # 4. Run backend
-cd ../server
+cd ../backend
 npm run dev
 
 # 5. Run ML API
-cd ../ml-model
+cd ../model-api
 pip install -r requirements.txt
-python app.py
+python app/main.py
 
 # 6. Run frontend
-cd ../client
+cd ../frontend
 npm run dev
 ```
 ## Docker Setup
