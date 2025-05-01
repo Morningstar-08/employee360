@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - 5000:5000
+      - 6000:6000
     volumes:
       - pip_cache:/root/.cache/pip
     networks:
@@ -33,6 +33,7 @@ services:
       - 8000:8000
     depends_on:
       - mongo
+      - ml-service
   frontend:
     build:
       context: ./frontend

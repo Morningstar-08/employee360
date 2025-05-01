@@ -5,7 +5,7 @@ router.post("/attrition", async (req, res) => {
   try {
     console.log("Received attrition data:", req.body);
     const response = await axios.post(
-      "http://localhost:5000/predict",
+      "http://ml-service:6000/predict",
       req.body
     );
 
