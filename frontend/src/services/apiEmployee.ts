@@ -31,6 +31,7 @@ export interface Employee {
 }
 
 const API_BASE = "http://localhost:8000/api/employees";
+const API_BASE2 = "http://localhost:8000/api/predict";
 
 export const getAllEmployees = async (): Promise<Employee[]> => {
   const response = await axios.get(`${API_BASE}/getAllEmployees`);
@@ -74,5 +75,10 @@ export const getEmployeeAttritionPrediction = async (id: string) => {
   const response = await axios.post(
     `${API_BASE}/employeeAttrition/${id}/predict`
   );
+  return response.data;
+};
+
+export const attritionPrediction = async (data: Partial<Employee>) => {
+  const response = await axios.post(`${API_BASE2}/attrition`, data);
   return response.data;
 };

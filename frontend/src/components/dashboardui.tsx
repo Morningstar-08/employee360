@@ -139,18 +139,18 @@ export default function DashboardUI() {
 
   // ✅ Chart 6: Monthly Attrition using leavingMonth
   const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
+    "January",
+    "February",
+    "March",
+    "April",
     "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const jobStatsData = months.map((month) => {

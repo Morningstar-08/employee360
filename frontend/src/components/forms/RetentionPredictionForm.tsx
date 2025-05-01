@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useState } from "react";
+import { attritionPrediction } from "@/services/apiEmployee";
 
 const initialFormState = {
   Age: "",
@@ -45,6 +46,7 @@ export default function RetentionPredictionForm() {
   ]);
 
   const [reasons, setReasons] = useState<string[]>([]);
+  const [classification, setClassification] = useState<string>("");
 
   const [formData, setFormData] = useState<FormData>(initialFormState);
 
@@ -59,23 +61,20 @@ export default function RetentionPredictionForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await attritionPrediction(formData);
 
-      if (!response.ok) throw new Error("Prediction failed");
+      const { probability, classification, reasons } = response;
 
-      const result = await response.json();
-
-      const likelihood = result.attrition;
+      // Update the prediction data based on the response
       setPredictionData([
-        { name: "Likely", value: Math.round(likelihood * 100) },
-        { name: "Unlikely", value: Math.round((1 - likelihood) * 100) },
+        { name: "Likely", value: Math.round(probability * 100) },
+        { name: "Unlikely", value: Math.round((1 - probability) * 100) },
       ]);
+      setClassification(classification);
+      // Update the reasons
+      setReasons(reasons.slice(0, 3)); // Only show the top 3 reasons
 
-      setReasons(result.reasons.slice(0, 3));
+      // Show the graph after setting the data
       setShowGraph(true);
     } catch (error) {
       console.error("Error:", error);
@@ -109,37 +108,37 @@ export default function RetentionPredictionForm() {
               {[
                 {
                   label: "Age",
-                  name: "age",
+                  name: "Age",
                   type: "number",
                   props: { min: 18, max: 65 },
                 },
                 {
                   label: "Job Level",
-                  name: "jobLevel",
+                  name: "JobLevel",
                   type: "number",
                   props: { min: 1 },
                 },
                 {
                   label: "Monthly Income",
-                  name: "monthlyIncome",
+                  name: "MonthlyIncome",
                   type: "number",
                   props: { min: 1000, max: 200000 },
                 },
                 {
                   label: "Percent Salary Hike",
-                  name: "percentSalaryHike",
+                  name: "PercentSalaryHike",
                   type: "number",
                   props: { min: 10, max: 25, step: 0.1 },
                 },
                 {
                   label: "Years at Company",
-                  name: "yearsAtCompany",
+                  name: "YearsAtCompany",
                   type: "number",
                   props: { min: 0, max: 40 },
                 },
                 {
                   label: "Years Since Last Promotion",
-                  name: "yearsSinceLastPromotion",
+                  name: "YearsSinceLastPromotion",
                   type: "number",
                   props: { min: 0, max: 15 },
                 },
@@ -166,7 +165,7 @@ export default function RetentionPredictionForm() {
               {/* Select Fields */}
               {[
                 {
-                  name: "department",
+                  name: "Department",
                   label: "Department",
                   options: [
                     "Sales",
@@ -175,33 +174,27 @@ export default function RetentionPredictionForm() {
                   ],
                 },
                 {
-                  name: "education",
+                  name: "Education",
                   label: "Education",
-                  options: [
-                    "Below College",
-                    "College",
-                    "Bachelor",
-                    "Master",
-                    "Doctor",
-                  ],
+                  options: [1, 2, 3, 4],
                 },
                 {
-                  name: "environmentSatisfaction",
+                  name: "EnvironmentSatisfaction",
                   label: "Environment Satisfaction",
-                  options: ["Low", "Medium", "High", "Very High"],
+                  options: [1, 2, 3, 4],
                 },
                 {
-                  name: "gender",
+                  name: "Gender",
                   label: "Gender",
                   options: ["Male", "Female"],
                 },
                 {
-                  name: "jobInvolvement",
+                  name: "JobInvolvement",
                   label: "Job Involvement",
-                  options: ["Low", "Medium", "High", "Very High"],
+                  options: [1, 2, 3, 4],
                 },
                 {
-                  name: "jobRole",
+                  name: "JobRole",
                   label: "Job Role",
                   options: [
                     "Sales Executive",
@@ -216,25 +209,25 @@ export default function RetentionPredictionForm() {
                   ],
                 },
                 {
-                  name: "jobSatisfaction",
+                  name: "JobSatisfaction",
                   label: "Job Satisfaction",
-                  options: ["Low", "Medium", "High", "Very High"],
+                  options: [1, 2, 3, 4],
                 },
                 {
-                  name: "maritalStatus",
+                  name: "MaritalStatus",
                   label: "Marital Status",
                   options: ["Single", "Married", "Divorced"],
                 },
-                { name: "overTime", label: "Overtime", options: ["Yes", "No"] },
+                { name: "OverTime", label: "Overtime", options: ["Yes", "No"] },
                 {
-                  name: "performanceRating",
+                  name: "PerformanceRating",
                   label: "Performance Rating",
-                  options: ["Low", "Good", "Excellent", "Outstanding"],
+                  options: [1, 2, 3, 4],
                 },
                 {
-                  name: "workLifeBalance",
+                  name: "WorkLifeBalance",
                   label: "Work-Life Balance",
-                  options: ["Bad", "Good", "Better", "Best"],
+                  options: [1, 2, 3, 4],
                 },
               ].map((field) => (
                 <div key={field.name}>
@@ -294,6 +287,11 @@ export default function RetentionPredictionForm() {
               </ResponsiveContainer>
               {reasons.length > 0 && (
                 <div className="mt-6">
+                  {/* New sentence showing classification */}
+                  <h3 className="text-sm text-gray-700 mb-2">
+                    This employee is at <strong>{classification}</strong> risk
+                    of leaving the company.
+                  </h3>
                   <h3 className="text-md font-semibold mb-2 text-gray-700">
                     Top 3 Reasons for Predicted Attrition:
                   </h3>
