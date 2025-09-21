@@ -16,7 +16,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const currentPath = location.pathname;
 
-  const [employeeOpen, setEmployeeOpen] = useState(false);
+  const [employeeOpen, setEmployeeOpen] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false); // For mobile
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const Sidebar = () => {
           <ul className="space-y-2">
             <li
               onClick={() => handleNavigate("/dashboard")}
-              className={`px-6 py-2 flex items-center space-x-3 rounded-r-full transition-all duration-200 hover:scale-105 cursor-pointer ${
+              className={`px-6 py-2 flex items-center space-x-3 rounded-r-sm transition-all duration-200 hover:scale-105 cursor-pointer ${
                 isActive("/dashboard")
                   ? "bg-blue-100 text-blue-600 font-semibold"
                   : "hover:bg-gray-100"
@@ -86,7 +86,7 @@ const Sidebar = () => {
             <ul>
               <div
                 onClick={() => setEmployeeOpen(!employeeOpen)}
-                className="px-6 py-2 flex items-center justify-between rounded-r-full transition-all duration-200 hover:scale-105 cursor-pointer hover:bg-gray-100"
+                className="px-6 py-2 flex items-center justify-between rounded-r-sm transition-all duration-200 hover:scale-105 cursor-pointer hover:bg-gray-100"
               >
                 <div className="flex items-center space-x-3">
                   <Users className="w-5 h-5" />
@@ -134,7 +134,7 @@ const Sidebar = () => {
 
             <li
               onClick={() => handleNavigate("/retention-prediction")}
-              className={`px-6 py-2 flex items-center space-x-3 rounded-r-full transition-all duration-200 hover:scale-105 cursor-pointer ${
+              className={`px-6 py-2 flex items-center space-x-3 rounded-r-sm transition-all duration-200 hover:scale-105 cursor-pointer ${
                 isActive("/retention-prediction")
                   ? "bg-blue-100 text-blue-600 font-semibold"
                   : "hover:bg-gray-100"
@@ -142,6 +142,17 @@ const Sidebar = () => {
             >
               <LayoutDashboard className="w-5 h-5" />
               <span>Retention Prediction</span>
+            </li>
+            <li
+              onClick={() => handleNavigate("/chat")}
+              className={`px-6 py-2 flex items-center space-x-3 rounded-r-sm transition-all duration-200 hover:scale-105 cursor-pointer ${
+                isActive("/chat")
+                  ? "bg-blue-100 text-blue-600 font-semibold"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Chat with Prediction</span>
             </li>
           </ul>
         </div>

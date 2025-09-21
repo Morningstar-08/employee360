@@ -11,6 +11,7 @@ import RetentionPrediction from "./pages/RetentionPrediction";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import Chatpage from "./pages/Chatpage";
 
 export default function App() {
   return (
@@ -48,6 +49,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <RetentionPrediction />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chatpage />
             </ProtectedRoute>
           }
         />
