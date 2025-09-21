@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const exportRoutes = require("./routes/exportRoutes");
 const attritionRoutes = require("./routes/attritionRoute");
+const chatRoutes = require("./routes/chatRoute");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/excel", exportRoutes);
 app.use("/api/predict", attritionRoutes);
+app.use("/api/chat", chatRoutes);
 
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
