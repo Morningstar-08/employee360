@@ -37,25 +37,7 @@ export default function ChatInterface() {
     scrollToBottom();
   }, [messages]);
 
-  // Simulate AI response (replace with actual API call)
-  const simulateAIResponse = async (userMessage: string) => {
-    setIsThinking(true);
-
-    // Simulate thinking delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    const aiResponse: ChatMessage = {
-      id: Date.now().toString(),
-      content: `Thank you for your message: "${userMessage}". I'm here to help with employee-related questions and insights. What specific information would you like to know?`,
-      sender: "ai",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, aiResponse]);
-    setIsThinking(false);
-  };
-
-  // Handle sending a message
+  //Main API integration call
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
@@ -68,9 +50,79 @@ export default function ChatInterface() {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputText("");
+    setIsThinking(true);
 
-    // Simulate AI response
-    await simulateAIResponse(inputText);
+    // --- START: API INTEGRATION ---
+    try {
+      const response = await fetch("http://localhost:8000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add your auth token if required
+          // 'Authorization': `Bearer ${your_jwt_token}`
+        },
+        body: JSON.stringify({ message: inputText }),
+      });
+
+      if (!response.body) return;
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      // Add a placeholder for the AI's response
+      const aiResponseId = Date.now().toString();
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: aiResponseId,
+          content: "", // Start with empty content
+          sender: "ai",
+          timestamp: new Date(),
+        },
+      ]);
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        const chunk = decoder.decode(value);
+
+        // SSE format is "data: {...}\n\n"
+        const lines = chunk.split("\n\n");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const jsonString = line.substring(6);
+            if (jsonString) {
+              const parsed = JSON.parse(jsonString);
+              // Update the AI message content as new chunks arrive
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === aiResponseId
+                    ? { ...msg, content: msg.content + (parsed.content || "") }
+                    : msg
+                )
+              );
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch AI response:", error);
+      // Optionally handle the error in the UI
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          content:
+            "Sorry, I'm having trouble connecting. Please try again later.",
+          sender: "ai",
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
+      setIsThinking(false);
+    }
+    // --- END: API INTEGRATION ---
   };
 
   // Handle Enter key press

@@ -3,19 +3,17 @@ const { DynamicTool } = require("@langchain/core/tools");
 const { AgentExecutor, createToolCallingAgent } = require("langchain/agents");
 const { ChatPromptTemplate } = require("@langchain/core/prompts");
 const { z } = require("zod");
-const axios = require("axios"); // To call your Flask/Node APIs
-// Add your MongoDB client for RAG
+const axios = require("axios");
 
-// Initialize Gemini
 const model = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash", // Or your preferred model
+  model: "gemini-2.5-flash",
   apiKey: process.env.GOOGLE_API_KEY,
 });
 
-// services/chatService.js (continued)
+const API_BASE_URL = "http://localhost:8000/api/employees";
 
 const tools = [
-  // Tool for your prediction API
+  //  prediction API
   new DynamicTool({
     name: "get_employee_attrition_risk",
     description:
@@ -23,9 +21,10 @@ const tools = [
     func: async (input) => {
       // Input here is the string passed by the LLM, e.g., "102"
       try {
-        const response = await axios.get(
-          `http://localhost:8000/employeeAttrition/:${input}/predict`
+        const response = await axios.post(
+          `${API_BASE_URL}/employeeAttrition/${input}/predict`
         );
+        console.log(response);
         return JSON.stringify(response.data);
       } catch (error) {
         return "Failed to fetch attrition risk. Ensure the employee ID is correct.";
@@ -34,32 +33,68 @@ const tools = [
     schema: z.string().describe("The employee ID, for example, 102"),
   }),
 
-  // Tool for your analytics API
   new DynamicTool({
-    name: "get_department_analytics",
+    name: "get_employee_details_by_id",
     description:
-      "Provides analytics on employee attrition grouped by a specific category, such as department. Use this to find top or bottom departments by attrition.",
+      "Fetches detailed records for a single employee from the database using their ID. Use this for general questions about an employee's profile, role, or tenure.",
     func: async (input) => {
-      // Here the LLM will pass "department" based on the user's query
       try {
         const response = await axios.get(
-          `http://localhost:3000/metrics?groupBy=${input}`
+          `${API_BASE_URL}/getEmployeeById/${input}`
         );
         return JSON.stringify(response.data);
       } catch (error) {
-        return "Failed to fetch department analytics.";
+        return "Failed to fetch employee details. Please ensure the employee ID is correct.";
       }
     },
-    schema: z
-      .string()
-      .describe("The category to group by, must be 'department'."),
+    schema: z.string().describe("The unique ID of the employee to search for."),
+  }),
+
+  // Tool to get a list of all employees (current and past)
+  new DynamicTool({
+    name: "get_all_employees",
+    description:
+      "Retrieves a list of all employees who have ever worked at the company, including current and past employees. Use this for broad queries about the total workforce size over time.",
+    func: async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/getAllEmployees`);
+        return `There are a total of ${response.data.length} employees in the record.`;
+      } catch (error) {
+        return "Failed to fetch the list of all employees.";
+      }
+    },
+    schema: z.object({}), // No input needed
+  }),
+
+  // Tool to get a list of current employees
+  new DynamicTool({
+    name: "get_all_current_employees",
+    description:
+      "Retrieves a list of all employees who are currently employed by the company. Use this for questions about the current headcount or active workforce.",
+    func: async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/getAllCurrentEmployees`
+        );
+        return `There are currently ${response.data.length} active employees.`;
+      } catch (error) {
+        return "Failed to fetch the list of current employees.";
+      }
+    },
+    schema: z.object({}), // No input needed
   }),
 ];
 
 const prompt = ChatPromptTemplate.fromMessages([
   [
     "system",
-    "You are a helpful HR assistant for the Employee360 platform. You can answer questions about employee attrition and details. Be concise and professional.",
+    `You are a helpful HR data analyst for the Employee360 platform.Your goal is to answer the user's question, even if it requires multiple steps.
+If a user asks a specific, filtered question (e.g., "how many employees in Sales?"), and you don't have a direct tool for that filter, your strategy should be:
+1.  Use a broader tool to get all the necessary data (e.g., use 'get_all_current_employees_data').
+2.  Analyze the data you receive from the tool.
+3.  Perform the required filtering or calculation yourself to find the answer.
+4.  Provide the final, synthesized answer to the user.
+Do not simply state your tool's limitations. Be proactive and use the tools you have to figure out the answer.`,
   ],
   ["placeholder", "{chat_history}"],
   ["human", "{input}"],

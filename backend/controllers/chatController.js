@@ -17,13 +17,7 @@ const handleChatMessage = async (req, res) => {
     res.setHeader("Connection", "keep-alive");
 
     for await (const chunk of stream) {
-      if (chunk.agent?.returnValues?.output) {
-        res.write(
-          `data: ${JSON.stringify({
-            content: chunk.agent.returnValues.output,
-          })}\n\n`
-        );
-      }
+      res.write(`data: ${JSON.stringify({ content: chunk.output })}\n\n`);
     }
     res.end();
   } catch (error) {

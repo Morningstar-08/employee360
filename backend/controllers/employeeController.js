@@ -128,6 +128,7 @@ const getEmployeeById = async (req, res) => {
 // Predict attrition using ML API
 const predictAttrition = async (req, res) => {
   try {
+    console.log(req.params.id);
     const employee = await Employee.findById(req.params.id);
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
