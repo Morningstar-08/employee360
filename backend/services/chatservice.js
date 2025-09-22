@@ -83,6 +83,34 @@ const tools = [
     },
     schema: z.object({}), // No input needed
   }),
+
+  new DynamicTool({
+    name: "get_employees_by_department",
+    description:
+      "Retrieves a list of all employees belonging to a specific department. Use this to find employees by their department, then sort/filter them according to condition given by the user.",
+    func: async (input) => {
+      try {
+        const departmentName = input;
+        const response = await axios.get(
+          `${API_BASE_URL}/getEmployeesByDepartment/${departmentName}`
+        );
+
+        // Return the full list of employees for the agent to process
+        return JSON.stringify(response.data);
+      } catch (error) {
+        // Handle cases where the department might not exist
+        if (error.response && error.response.status === 404) {
+          return `No employees were found for the department: ${input}.`;
+        }
+        return "Failed to fetch the list of employees by department.";
+      }
+    },
+    schema: z
+      .string()
+      .describe(
+        "The name of the department to filter by, for example, 'Sales' or 'Engineering'"
+      ),
+  }),
 ];
 
 const prompt = ChatPromptTemplate.fromMessages([

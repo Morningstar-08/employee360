@@ -32,6 +32,7 @@ export interface Employee {
 
 const API_BASE = "http://localhost:8000/api/employees";
 const API_BASE2 = "http://localhost:8000/api/predict";
+const API_BASE3 = "http://localhost:8000/api/excel";
 
 export const getAllEmployees = async (): Promise<Employee[]> => {
   const response = await axios.get(`${API_BASE}/getAllEmployees`);
@@ -81,4 +82,26 @@ export const getEmployeeAttritionPrediction = async (id: string) => {
 export const attritionPrediction = async (data: Partial<Employee>) => {
   const response = await axios.post(`${API_BASE2}/attrition`, data);
   return response.data;
+};
+
+export const exportToExcel = async () => {
+  try {
+    const response = await axios.get(`${API_BASE3}/export`, {
+      responseType: "blob",
+    });
+    const blob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "employees.xlsx"; // Set the desired filename
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading the Excel file:", error);
+    throw new Error("Could not download the file.");
+  }
 };

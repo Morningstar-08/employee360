@@ -11,17 +11,22 @@ router.patch("/removeEmployee/:id", employeeController.removeEmployee);
 router.get("/getAllEmployees", employeeController.getAllEmployees);
 
 router.get(
-    "/getAllCurrentEmployees",
-    employeeController.getAllCurrentEmployees
+  "/getAllCurrentEmployees",
+  employeeController.getAllCurrentEmployees
 );
 
 router.get("/getAttritionEmployees", employeeController.getAttritionEmployees);
 
 router.get("/getEmployeeById/:id", employeeController.getEmployeeById);
 
+router.get(
+  "/getEmployeesByDepartment/:department",
+  employeeController.getEmployeesByDepartment
+);
+
 router.post(
-    "/employeeAttrition/:id/predict",
-    employeeController.predictAttrition
+  "/employeeAttrition/:id/predict",
+  employeeController.predictAttrition
 );
 
 module.exports = router;

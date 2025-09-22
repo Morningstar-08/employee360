@@ -7,7 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Employee, getAllEmployees } from "@/services/apiEmployee";
+import {
+  Employee,
+  exportToExcel,
+  getAllEmployees,
+} from "@/services/apiEmployee";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -113,7 +117,7 @@ export default function EmployeeTableApi() {
       try {
         const res = await getAllEmployees(); // Replace with your API URL
         setEmployees(res);
-        console.log(res);
+        // console.log(res);
       } catch (err) {
         console.error("Failed to fetch employee data:", err);
       } finally {
@@ -123,6 +127,14 @@ export default function EmployeeTableApi() {
 
     fetchEmployees();
   }, []);
+
+  const handleExport = async () => {
+    try {
+      await exportToExcel(); // Simply call the function
+    } catch (e) {
+    } finally {
+    }
+  };
 
   if (loading) return <p className="p-4">Loading employee data...</p>;
 
@@ -171,7 +183,7 @@ export default function EmployeeTableApi() {
         <Button
           variant="outline"
           className="border-gray-300"
-          onClick={() => {}}
+          onClick={handleExport}
         >
           Export to Excel
         </Button>

@@ -3,6 +3,6 @@ const { protect } = require("../middleware/authMiddleware");
 const { exportEmployeeData } = require("../controllers/exportController");
 const router = express.Router();
 
-router.get("/export", protect, exportEmployeeData);
+router.get("/export", exportEmployeeData);
 
 module.exports = router;

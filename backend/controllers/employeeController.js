@@ -125,6 +125,29 @@ const getEmployeeById = async (req, res) => {
   }
 };
 
+//employees by Department
+const getEmployeesByDepartment = async (req, res) => {
+  try {
+    const { department } = req.params;
+    if (!department) {
+      return res
+        .status(400)
+        .json({ message: "Department query parameter is required" });
+    }
+    console.log("Fetching employees for department:", department);
+    // Find all employees where the 'department' field matches
+    const employees = await Employee.find({ Department: department });
+    if (!employees || employees.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No employees found in this department" });
+    }
+    res.json(employees);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Predict attrition using ML API
 const predictAttrition = async (req, res) => {
   try {
@@ -172,4 +195,5 @@ module.exports = {
   predictAttrition,
   getAllCurrentEmployees,
   getAttritionEmployees,
+  getEmployeesByDepartment,
 };
